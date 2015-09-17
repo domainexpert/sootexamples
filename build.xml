@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SootSurvivor" default="compile" basedir=".">
+	<description>
+    Build file for examples from "A Survivor's Guide to Java Program Analysis in Soot"
+  </description>
+
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="build" location="build"/>
+	<property name="soot.output" location="soot_output"/>
+	<property name="soot.lib.dir" location="/Users/andrew/lib"/>
+	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
+
+	<!-- Soot library paths -->
+	<path id="soot.lib">
+		<pathelement path="${soot.lib.dir}/sootclasses-2.5.0.jar"/>
+		<pathelement path="${soot.lib.dir}/jasminclasses-2.5.0.jar"/>
+		<pathelement path="${soot.lib.dir}/polyglotclasses-1.3.5.jar"/>
+	</path>
+
+	<!-- Java library paths -->
+	<path id="jre.lib">
+		<pathelement path="."/>
+		<pathelement path="${jdk.lib.dir}/alt-rt.jar"/>
+		<pathelement path="${jdk.lib.dir}/alt-string.jar"/>
+		<pathelement path="${jdk.lib.dir}/charsets.jar"/>
+		<pathelement path="${jdk.lib.dir}/classes.jar"/>
+		<pathelement path="${jdk.lib.dir}/dt.jar"/>
+		<pathelement path="${jdk.lib.dir}/jce.jar"/>
+		<pathelement path="${jdk.lib.dir}/jconsole.jar"/>
+		<pathelement path="${jdk.lib.dir}/jsse.jar"/>
+		<pathelement path="${jdk.lib.dir}/management-agent.jar"/>
+		<pathelement path="${jdk.lib.dir}/ui.jar"/>
+	</path>
+
+	<!-- The value of -soot-class-path -->
+	<path id="soot.class.path">
+		<path refid="jre.lib"/>
+		<pathelement path="${build}"/>
+	</path>
+
+	<!-- The value of -soot-class-path for non-soot.Main main classes -->
+	<path id="soot.class.path.ownmain">
+		<path refid="jre.lib"/>
+		<path refid="soot.lib"/>
+		<pathelement path="${build}"/>
+	</path>
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp/>
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+		<!-- Create the Soot output directory -->
+		<mkdir dir="${soot.output}"/>
+	</target>
+
+	<target name="compile" depends="init"
+        description="compile the source">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"
+			deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
+	</target>
+
+	<target name="clean"
+        description="clean up">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}"/>
+		<delete dir="${soot.output}"/>
+	</target>
+
+	<!-- This outputs Jimple representation of the bytecode -->	
+	<target name="jimple" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+		</java>
+	</target>
+
+	<!-- This outputs Shimple representation of the bytecode -->
+	<target name="shimple" depends="compile"
+	  		description="output shimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="shimple"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+		</java>
+	</target>
+
+	<!--
+		This outputs Jimple representation of the bytecode
+		with optimization using constant propagation and folder.
+	-->	
+	<target name="jimple-optimized" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-O"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+		</java>
+	</target>
+
+	<!--
+		This outputs Jimple representation of the bytecode
+		with optimization using Shimple constant propagation
+		and folder.		
+	-->
+	<target name="jimple-optimized-via-shimple" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="jimple"/>
+			<arg value="-via-shimple"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-O"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+		</java>
+	</target>
+
+	<!-- This outputs Grimple representation of the bytecode -->	
+	<target name="grimple" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="G"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+		</java>
+	</target>
+
+	<!-- This outputs -->
+	<target name="null-pointer-analysis" depends="compile"
+		description="run null pointer analysis">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-xml-attributes"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+			<arg value="-p"/>
+			<arg value="jap.npcolorer"/>
+			<arg value="on"/>
+			<arg value="com.domainexpert.survivor.test.NullPointerTest"/>
+		</java>	
+	</target>
+	
+	<target name="array-bounds-check" depends="compile"
+		description="run array bounds check">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-xml-attributes"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+			<arg value="-p"/>
+			<arg value="jap.abc"/>
+			<arg value="on"/>
+			<arg value="-p"/>
+			<arg value="jap.abc"/>
+			<arg value="add-color-tags:true"/>
+			<arg value="com.domainexpert.survivor.test.ArrayBoundsTest"/>
+		</java>
+	</target>
+	
+	<target name="liveness" depends="compile"
+		description="run live variable analysis">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-xml-attributes"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+			<arg value="-p"/>
+			<arg value="jap.lvtagger"/>
+			<arg value="on"/>
+			<arg value="com.domainexpert.survivor.test.LiveVariablesTest"/>
+		</java>
+	</target>
+	
+	<target name="very-busy-expressions" depends="compile"
+		description="run very busy expressions analysis">
+		<java classname="com.domainexpert.survivor.VeryBusyExpressionsMain">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${build}"/>
+			</classpath>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path.ownmain"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${build}"/>
+		</java>
+	</target>
+</project>
