@@ -8,14 +8,12 @@
 	<property name="src" location="src"/>
 	<property name="build" location="build"/>
 	<property name="soot.output" location="soot_output"/>
-	<property name="soot.lib.dir" location="/Users/andrew/lib"/>
+	<property name="soot.lib.dir" location="/Users/andrew/software/soot/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
 
 	<!-- Soot library paths -->
 	<path id="soot.lib">
-		<pathelement path="${soot.lib.dir}/sootclasses-2.5.0.jar"/>
-		<pathelement path="${soot.lib.dir}/jasminclasses-2.5.0.jar"/>
-		<pathelement path="${soot.lib.dir}/polyglotclasses-1.3.5.jar"/>
+		<pathelement path="${soot.lib.dir}/soot-trunk.jar"/>
 	</path>
 
 	<!-- Java library paths -->
