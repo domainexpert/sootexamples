@@ -3,6 +3,12 @@ package com.domainexpert.survivor;
 import soot.EquivTo;
 import soot.G;
 import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AddExpr;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.UnopExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
@@ -23,9 +29,23 @@ public class VeryBusyExpressionAnalysis
 		gen(out, u);		
 	}
 
-	private void gen(FlowSet<Object> outSet, Unit u) {
+	private void gen(FlowSet<Object> outSet, Unit u) {		
 		G.v().out.println("Executing gen on unit " + u.toString());
+		G.v().out.println("Type: " + u.getClass().getName());
 		G.v().out.flush();
+		
+		if (u instanceof AssignStmt) {
+			Value v = ((AssignStmt) u).getRightOp();
+			if (v instanceof BinopExpr) {
+				Value opValue1 = ((BinopExpr) v).getOp1();
+				Value opValue2 = ((BinopExpr) v).getOp2();
+				G.v().out.println("Binary operand types: " + opValue1.getClass().getName()
+						+ ", " + opValue2.getClass().getName());
+			} else if (v instanceof UnopExpr) {
+				Value opValue = ((UnopExpr) v).getOp();
+				G.v().out.println("Unary operand type: " + opValue.getClass().getName());
+			}
+		}
 	}
 
 	private void kill(FlowSet<Object> inSet, Unit u, FlowSet<Object> outSet) {

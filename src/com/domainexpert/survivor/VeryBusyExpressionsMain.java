@@ -13,15 +13,20 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
 public class VeryBusyExpressionsMain {
+	private static String CLASS_NAME =
+			"com.domainexpert.survivor.test.VeryBusyExpressionTest";
+	
 	public static void main(String[] args) {
 
-		// Set the arguments
-		soot.Main.main(args);
+		soot.options.Options.v().parse(args);
 		
-		// Set up the class we’re working with
-		SootClass c = Scene.v().loadClassAndSupport("com.domainexpert.survivor.test.VeryBusyExpressionTest");
-		c.setApplicationClass();
+		// Load all the necessary classes based on the options
+		Scene.v().loadNecessaryClasses();
 
+		// Set up the class we’re working with
+		SootClass c = Scene.v().loadClassAndSupport(CLASS_NAME);
+		c.setApplicationClass();
+		
 		// Retrieve the method and its body
 		SootMethod m = c.getMethodByName("main");
 		Body b = m.retrieveActiveBody();

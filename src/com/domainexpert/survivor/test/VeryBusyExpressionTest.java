@@ -2,9 +2,8 @@ package com.domainexpert.survivor.test;
 
 public class VeryBusyExpressionTest {
 	
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		int x, u;
+		int x = 0, u;
 		int i, j;
 		int v = 2;
 
@@ -31,5 +30,8 @@ public class VeryBusyExpressionTest {
 			} while (j++ < args.length);
 
 		} while (i++ < 10);
+
+		System.out.println("x= " + x + " u= " + u);
 	}
+
 }
