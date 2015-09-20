@@ -3,6 +3,7 @@ package com.domainexpert.survivor;
 import java.util.List;
 
 import soot.Unit;
+import soot.jimple.Expr;
 import soot.toolkits.graph.UnitGraph;
 
 public class SimpleVeryBusyExpressions implements VeryBusyExpressions {
@@ -13,12 +14,12 @@ public class SimpleVeryBusyExpressions implements VeryBusyExpressions {
 	}
 	
 	@Override
-	public List<Object> getBusyExpressionsBefore(Unit s) {
+	public List<Expr> getBusyExpressionsBefore(Unit s) {
 		return analysis.getFlowBefore(s).toList();
 	}
 
 	@Override
-	public List<Object> getBusyExpressionsAfter(Unit s) {
+	public List<Expr> getBusyExpressionsAfter(Unit s) {
 		return analysis.getFlowAfter(s).toList();
 	}
 

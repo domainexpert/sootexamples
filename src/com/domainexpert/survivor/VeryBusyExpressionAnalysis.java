@@ -1,21 +1,17 @@
 package com.domainexpert.survivor;
 
 import soot.EquivTo;
-import soot.G;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
-import soot.jimple.AddExpr;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
-import soot.jimple.UnopExpr;
+import soot.jimple.Expr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
 
 public class VeryBusyExpressionAnalysis
-	extends BackwardFlowAnalysis<Unit, FlowSet<Object>> {
+	extends BackwardFlowAnalysis<Unit, FlowSet<Expr>> {
 
 	public VeryBusyExpressionAnalysis(UnitGraph graph) {
 		super(graph);
@@ -23,55 +19,73 @@ public class VeryBusyExpressionAnalysis
 	}
 
 	@Override
-	protected void flowThrough(FlowSet<Object> in, Unit node, FlowSet<Object> out) {
+	protected void flowThrough(FlowSet<Expr> in, Unit node, FlowSet<Expr> out) {
 		Unit u = node;
 		kill(in, u, out);
 		gen(out, u);		
 	}
 
-	private void gen(FlowSet<Object> outSet, Unit u) {		
-		G.v().out.println("Executing gen on unit " + u.toString());
-		G.v().out.println("Type: " + u.getClass().getName());
-		G.v().out.flush();
-		
+	/**
+	 * The gen operation of the dataflow
+	 * 
+	 * @param outSet the output set
+	 * @param u the unit
+	 */
+	private void gen(FlowSet<Expr> outSet, Unit u) {		
 		if (u instanceof AssignStmt) {
 			Value v = ((AssignStmt) u).getRightOp();
-			if (v instanceof BinopExpr) {
-				Value opValue1 = ((BinopExpr) v).getOp1();
-				Value opValue2 = ((BinopExpr) v).getOp2();
-				G.v().out.println("Binary operand types: " + opValue1.getClass().getName()
-						+ ", " + opValue2.getClass().getName());
-			} else if (v instanceof UnopExpr) {
-				Value opValue = ((UnopExpr) v).getOp();
-				G.v().out.println("Unary operand type: " + opValue.getClass().getName());
+			if (v instanceof Expr) {
+				outSet.add((Expr) v);
 			}
 		}
 	}
 
-	private void kill(FlowSet<Object> inSet, Unit u, FlowSet<Object> outSet) {
-		G.v().out.println("Executing kill on unit " + u.toString());
-		G.v().out.flush();
+	/**
+	 * The kill operation of the dataflow
+	 * 
+	 * @param inSet the input set
+	 * @param u the unit
+	 * @param outSet the output set
+	 */
+	private void kill(FlowSet<Expr> inSet, Unit u, FlowSet<Expr> outSet) {
+		if (u instanceof AssignStmt) {
+			Value v = ((AssignStmt) u).getLeftOp();
+			for (Expr e: inSet) {
+				boolean toBeAdded = true;
+				for (soot.ValueBox b : e.getUseBoxes()) {
+					if (((EquivTo) v).equivTo(b.getValue())) {
+						toBeAdded = false;
+						break;
+					}
+				}
+				if (toBeAdded) {
+					outSet.add(e);
+				}
+			}
+		} else {
+			inSet.copy(outSet);
+		}
 	}
 
 	@Override
-	protected void copy(FlowSet<Object> source, FlowSet<Object> dest) {
+	protected void copy(FlowSet<Expr> source, FlowSet<Expr> dest) {
 		source.copy(dest);
 	}
 
 	@Override
-	protected FlowSet<Object> entryInitialFlow() {
-		return new ValueArraySparseSet<Object>();
+	protected FlowSet<Expr> entryInitialFlow() {
+		return new ValueArraySparseSet<Expr>();
 	}
 
 
 	@Override
-	protected void merge(FlowSet<Object> in1, FlowSet<Object> in2, FlowSet<Object> out) {
+	protected void merge(FlowSet<Expr> in1, FlowSet<Expr> in2, FlowSet<Expr> out) {
 		in1.intersection(in2, out);
 	}
 
 	@Override
-	protected FlowSet<Object> newInitialFlow() {
-		return new ValueArraySparseSet<Object>();
+	protected FlowSet<Expr> newInitialFlow() {
+		return new ValueArraySparseSet<Expr>();
 	}
 
 	private class ValueArraySparseSet<T> extends ArraySparseSet<T> {

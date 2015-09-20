@@ -3,10 +3,11 @@ package com.domainexpert.survivor;
 import java.util.List;
 
 import soot.Unit;
+import soot.jimple.Expr;
 
 public interface VeryBusyExpressions {
 
-	public List<Object> getBusyExpressionsBefore(Unit s);
+	public List<Expr> getBusyExpressionsBefore(Unit s);
 	
-	public List<Object> getBusyExpressionsAfter(Unit s);
+	public List<Expr> getBusyExpressionsAfter(Unit s);
 }
