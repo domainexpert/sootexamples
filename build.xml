@@ -11,6 +11,10 @@
 	<property name="soot.lib.dir" location="/Users/andrew/software/soot/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
 
+	<!-- properties for the original call graph example -->
+	<property name="dk.brics.soot.callgraphs.src" location="call_graph/src"/>
+	<property name="dk.brics.soot.callgraphs.build" location="build/call_graph"/>
+	
 	<!-- Soot library paths -->
 	<path id="soot.lib">
 		<pathelement path="${soot.lib.dir}/soot-trunk.jar"/>
@@ -38,6 +42,12 @@
 		<pathelement path="${build}"/>
 	</path>
 
+	<path id="dk.brics.soot.callgraphs.soot.class.path">
+		<path refid="jre.lib"/>
+		<path refid="soot.lib"/>
+		<pathelement path="${dk.brics.soot.callgraphs.build}"/>
+	</path>
+
 	<target name="init">
 		<!-- Create the time stamp -->
 		<tstamp/>
@@ -45,6 +55,9 @@
 		<mkdir dir="${build}"/>
 		<!-- Create the Soot output directory -->
 		<mkdir dir="${soot.output}"/>
+		
+		<!-- Create the build directory of the original call graph example -->
+		<mkdir dir="${dk.brics.soot.callgraphs.build}"/>
 	</target>
 
 	<target name="compile" depends="init"
@@ -54,6 +67,13 @@
 			deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
+		
+		<!-- Compile the original call graph example -->
+		<javac srcdir="${dk.brics.soot.callgraphs.src}"
+			destdir="${dk.brics.soot.callgraphs.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
 	</target>
 
 	<target name="clean"
@@ -61,6 +81,7 @@
 		<!-- Delete the ${build} and ${dist} directory trees -->
 		<delete dir="${build}"/>
 		<delete dir="${soot.output}"/>
+	
 	</target>
 
 	<!-- This outputs Jimple representation of the bytecode -->	
@@ -233,6 +254,29 @@
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
 			<arg value="${build}"/>
+		</java>
+	</target>
+
+	<!-- Runs the original call graph example -->
+	<target name="original-callgraph" depends="compile"
+		description="run the original call graph example">
+		<java className="dk.brics.soot.callgraphs.CallGraphExample"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.soot.callgraphs.build}"/>
+			</classpath>
+			<arg value="-soot-class-path"/>
+			<arg pathref="dk.brics.soot.callgraphs.soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			
+			<!--
+				This avoids building the call graph of the excluded
+				JDK methods, which would slow down the call graph
+				construction significantly.
+			-->
+			<arg value="-no-bodies-for-excluded"/>
 		</java>
 	</target>
 </project>

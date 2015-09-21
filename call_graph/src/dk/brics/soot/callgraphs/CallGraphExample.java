@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import soot.G;
 import soot.MethodOrMethodContext;
 import soot.PackManager;
 import soot.Scene;
@@ -15,6 +16,7 @@ import soot.SootMethod;
 import soot.Transform;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.Targets;
 
 public class CallGraphExample
@@ -45,6 +47,18 @@ public class CallGraphExample
 		           SootMethod tgt = (SootMethod)targets.next();
 		           System.out.println(src + " may call " + tgt);
 		       }
+
+//		       G.v().out.println("Number of edges: " + cg.size());
+//
+//		       int sourceMethodsNo = 0;
+//		       Iterator<MethodOrMethodContext> methodIterator = cg.sourceMethods();
+//		       while (methodIterator.hasNext()) {
+//		    	   MethodOrMethodContext m = methodIterator.next();
+//		    	   G.v().out.println("Source method: " + m.method().getSignature());
+//		    	   sourceMethodsNo++;
+//		       }
+//		       
+//		       G.v().out.println("Number of source methods: " + sourceMethodsNo);
 		}
 		   
 	   }));
