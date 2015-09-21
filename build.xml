@@ -10,10 +10,11 @@
 	<property name="soot.output" location="soot_output"/>
 	<property name="soot.lib.dir" location="/Users/andrew/software/soot/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
-
+	<property name="com.domainexpert.build" location="${build}/main"/>
+	
 	<!-- properties for the original call graph example -->
 	<property name="dk.brics.soot.callgraphs.src" location="call_graph/src"/>
-	<property name="dk.brics.soot.callgraphs.build" location="build/call_graph"/>
+	<property name="dk.brics.soot.callgraphs.build" location="${build}/call_graph"/>
 	
 	<!-- Soot library paths -->
 	<path id="soot.lib">
@@ -39,9 +40,10 @@
 	<path id="soot.class.path">
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
-		<pathelement path="${build}"/>
+		<pathelement path="${com.domainexpert.build}"/>
 	</path>
 
+	<!-- The value of -soot-class-path for the original call graph example -->
 	<path id="dk.brics.soot.callgraphs.soot.class.path">
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
@@ -55,6 +57,9 @@
 		<mkdir dir="${build}"/>
 		<!-- Create the Soot output directory -->
 		<mkdir dir="${soot.output}"/>
+
+		<!-- Create the build directory for own-made programs -->
+		<mkdir dir="${com.domainexpert.build}"/>
 		
 		<!-- Create the build directory of the original call graph example -->
 		<mkdir dir="${dk.brics.soot.callgraphs.build}"/>
@@ -62,8 +67,8 @@
 
 	<target name="compile" depends="init"
         description="compile the source">
-		<!-- Compile the java code from ${src} into ${build} -->
-		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"
+		<!-- Compile the own-made programs -->
+		<javac srcdir="${src}" destdir="${com.domainexpert.build}" includeantruntime="false"
 			deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
@@ -78,10 +83,9 @@
 
 	<target name="clean"
         description="clean up">
-		<!-- Delete the ${build} and ${dist} directory trees -->
+		<!-- Delete the build and Soot output directory trees -->
 		<delete dir="${build}"/>
 		<delete dir="${soot.output}"/>
-	
 	</target>
 
 	<!-- This outputs Jimple representation of the bytecode -->	
@@ -96,7 +100,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -112,7 +116,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -132,7 +136,7 @@
 			<arg value="${soot.output}"/>
 			<arg value="-O"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -154,7 +158,7 @@
 			<arg value="${soot.output}"/>
 			<arg value="-O"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -170,7 +174,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainaexpert.build}"/>
 		</java>
 	</target>
 
@@ -187,7 +191,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 			<arg value="-p"/>
 			<arg value="jap.npcolorer"/>
 			<arg value="on"/>
@@ -208,7 +212,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 			<arg value="-p"/>
 			<arg value="jap.abc"/>
 			<arg value="on"/>
@@ -232,7 +236,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
 			<arg value="-p"/>
 			<arg value="jap.lvtagger"/>
 			<arg value="on"/>
@@ -240,20 +244,37 @@
 		</java>
 	</target>
 
-	<!-- This performs very busy expressions analysis -->
+	<!-- Runs very busy expressions analysis -->
 	<target name="very-busy-expressions" depends="compile"
 		description="run very busy expressions analysis">
 		<java classname="com.domainexpert.survivor.VeryBusyExpressionsMain">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${build}"/>
+				<pathelement path="${com.domainexpert.build}"/>
 			</classpath>
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${build}"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!-- Runs very busy expressions analysis -->
+	<target name="very-busy-expressions-tagger" depends="compile"
+		description="run very busy expressions analysis with tagging">
+		<java classname="com.domainexpert.survivor.VeryBusyExpressionsTagger">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
 		</java>
 	</target>
 

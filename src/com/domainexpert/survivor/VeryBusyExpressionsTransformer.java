@@ -18,6 +18,8 @@ import soot.toolkits.graph.UnitGraph;
 public class VeryBusyExpressionsTransformer 
 	extends BodyTransformer {
 
+	public static final String PHASE_NAME = "vbetagger";
+
 	@Override
 	protected void internalTransform(Body b, String phaseName,
 			Map<String, String> options) {

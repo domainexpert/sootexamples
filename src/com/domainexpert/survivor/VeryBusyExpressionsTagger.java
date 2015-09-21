@@ -1,15 +1,15 @@
 package com.domainexpert.survivor;
 
-import soot.BodyTransformer;
+import soot.PackManager;
+import soot.Transform;
 
 public class VeryBusyExpressionsTagger {
-
-	@SuppressWarnings("unused")
-	private static BodyTransformer bodyTransformer =
-			new VeryBusyExpressionsTransformer();
 	
 	public static void main(String[] args) {
-		
+		PackManager.v().getPack("jtp").add(new
+				Transform("jtp." + VeryBusyExpressionsTransformer.PHASE_NAME,
+						new VeryBusyExpressionsTransformer()));
+
 		soot.Main.main(args);
 	}
 
