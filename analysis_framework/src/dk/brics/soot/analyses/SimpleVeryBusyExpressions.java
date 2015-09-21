@@ -6,7 +6,6 @@ import dk.brics.soot.flowsets.ValueArraySparseSet;
 import soot.Local;
 import soot.Unit;
 import soot.ValueBox;
-import soot.jimple.BinopExpr;
 import soot.jimple.internal.AbstractBinopExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
@@ -25,11 +24,12 @@ public class SimpleVeryBusyExpressions implements VeryBusyExpressions
 
 		for (Unit s : graph) {
 
-			FlowSet set = (FlowSet) analysis.getFlowBefore(s);
+			FlowSet<AbstractBinopExpr> set =
+					(FlowSet<AbstractBinopExpr>) analysis.getFlowBefore(s);
 			unitToExpressionsBefore.put(s,
 					Collections.unmodifiableList(set.toList()));
 
-			set = (FlowSet) analysis.getFlowAfter(s);
+			set = (FlowSet<AbstractBinopExpr>) analysis.getFlowAfter(s);
 			unitToExpressionsAfter.put(s,
 					Collections.unmodifiableList(set.toList()));
 		}
@@ -50,12 +50,12 @@ public class SimpleVeryBusyExpressions implements VeryBusyExpressions
  * 
  * @author Árni Einarsson
  */
-class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
+class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<AbstractBinopExpr>>
 {
 	/**
 	 * Just for clarity. 
 	 */
-	private FlowSet emptySet;
+	private FlowSet<AbstractBinopExpr> emptySet;
 	
 	public SimpleVeryBusyAnalysis(DirectedGraph<Unit> g) {
 		// First obligation
@@ -71,7 +71,7 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 		// The contains method only compares references for equality.
 		// (i.e. only if both sets contain the same reference is it included
 		// in the intersecting set)
-		emptySet = new ValueArraySparseSet();
+		emptySet = new ValueArraySparseSet<AbstractBinopExpr>();
 
 		// NOTE: It's possible to build up the kill and gen sets of each of
 		// the nodes in the graph in advance. But in order to do so we
@@ -93,12 +93,15 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 	 * @param out the merged set
 	 */
 	@Override
-	protected void merge(FlowSet in1, FlowSet in2, FlowSet out) {
+	protected void merge(FlowSet<AbstractBinopExpr> in1,
+			FlowSet<AbstractBinopExpr> in2,
+			FlowSet<AbstractBinopExpr> out) {
 		in1.intersection(in2, out);
 	}
 
 	@Override
-	protected void copy(FlowSet source, FlowSet dest) {
+	protected void copy(FlowSet<AbstractBinopExpr> source,
+			FlowSet<AbstractBinopExpr> dest) {
 		source.copy(dest);
 	}
 	
@@ -113,7 +116,7 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 	 * @return an empty set 
 	 */
 	@Override
-	protected FlowSet newInitialFlow() {
+	protected FlowSet<AbstractBinopExpr> newInitialFlow() {
 		return emptySet.clone();
 	}
 
@@ -124,7 +127,7 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 	 * @return an empty set
 	 */
 	@Override
-	protected FlowSet entryInitialFlow() {
+	protected FlowSet<AbstractBinopExpr> entryInitialFlow() {
 		return emptySet.clone();
 	}
 	
@@ -144,7 +147,8 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 	 * @param out the out-set of the current node
 	 */
 	@Override
-	protected void flowThrough(FlowSet in, Unit node, FlowSet out) {
+	protected void flowThrough(FlowSet<AbstractBinopExpr> in, Unit node,
+			FlowSet<AbstractBinopExpr> out) {
 		// out <- (in - expr containing locals defined in d) union out 
 		kill(in, node, out);
 		// out <- out union expr used in d
@@ -162,14 +166,15 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 	 * @param u the unit being flown through
 	 * @param outSet the set flowing out of the unit
 	 */
-	private void kill(FlowSet inSet, Unit u, FlowSet outSet) {
-		FlowSet kills = emptySet.clone();
+	private void kill(FlowSet<AbstractBinopExpr> inSet, Unit u, 
+			FlowSet<AbstractBinopExpr> outSet) {
+		FlowSet<AbstractBinopExpr> kills = emptySet.clone();
 		for (ValueBox defBox : u.getDefBoxes()) {
 
 			if (defBox.getValue() instanceof Local) {
-				Iterator<BinopExpr> inIt = inSet.iterator();
+				Iterator<AbstractBinopExpr> inIt = inSet.iterator();
 				while (inIt.hasNext()) {
-					BinopExpr e = inIt.next();
+					AbstractBinopExpr e = inIt.next();
 					Iterator<ValueBox> eIt = e.getUseBoxes().iterator();
 					while (eIt.hasNext()) {
 						ValueBox useBox = eIt.next();
@@ -190,11 +195,11 @@ class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 	 * @param outSet the set flowing out of the unit
 	 * @param u the unit being flown through
 	 */
-	private void gen(FlowSet outSet, Unit u) {
+	private void gen(FlowSet<AbstractBinopExpr> outSet, Unit u) {
 		for (ValueBox useBox : u.getUseBoxes()) {
 
-			if (useBox.getValue() instanceof BinopExpr)
-				outSet.add(useBox.getValue());
+			if (useBox.getValue() instanceof AbstractBinopExpr)
+				outSet.add((AbstractBinopExpr) useBox.getValue());
 		}
 	}
 }

@@ -5,21 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import soot.SootMethod;
-
 public class Method {
 
 	private String name = "";
-	private Variable[] params;
-	
-    private List<Statement> sl;
+	private List<Statement> sl;
     private Set<Return> rs;
     private List<MethodCall> sites;
 	private MethodHead entry;
 	
 	public Method(String name, Variable[] params) {
 		this.name = name;
-		this.params = params;
 		sl = new LinkedList<Statement>();
 		rs = new HashSet<Return>();
 		sites = new LinkedList<MethodCall>();

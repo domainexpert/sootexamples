@@ -39,7 +39,7 @@ public class VeryBusyExpsTagger extends BodyTransformer {
 	 * @param phaseName the name of the phase this transform belongs to
 	 * @param options any options to this transform (in this case always empty) 
 	 */
-	protected void internalTransform(Body b, String phaseName, Map options) {
+	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 		VeryBusyExpressions vbe = new SimpleVeryBusyExpressions(new ExceptionalUnitGraph(b));
 		
 		for (Unit u : b.getUnits()) {

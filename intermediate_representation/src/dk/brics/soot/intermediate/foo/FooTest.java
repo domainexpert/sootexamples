@@ -7,6 +7,7 @@ public class FooTest {
 		System.out.println(ft.test());
 	}
 	
+	@SuppressWarnings("unused")
 	public int test() {
 		Foo f = new Foo();
 		f.foo(9);

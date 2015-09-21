@@ -4,6 +4,7 @@ import soot.BodyTransformer;
 
 public class VeryBusyExpressionsTagger {
 
+	@SuppressWarnings("unused")
 	private static BodyTransformer bodyTransformer =
 			new VeryBusyExpressionsTransformer();
 	

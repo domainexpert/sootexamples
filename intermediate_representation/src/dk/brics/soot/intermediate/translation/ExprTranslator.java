@@ -1,10 +1,7 @@
 package dk.brics.soot.intermediate.translation;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import soot.IntType;
 import soot.Local;
 import soot.RefType;
 import soot.SootClass;
@@ -31,7 +28,6 @@ import dk.brics.soot.intermediate.representation.FooMethodCall;
 import dk.brics.soot.intermediate.representation.Method;
 import dk.brics.soot.intermediate.representation.SomeMethodCall;
 import dk.brics.soot.intermediate.representation.Nop;
-import dk.brics.soot.intermediate.representation.Statement;
 import dk.brics.soot.intermediate.representation.Variable;
 
 
@@ -139,6 +135,8 @@ public class ExprTranslator extends soot.jimple.AbstractJimpleValueSwitch {
 			fa.setAssignmentTarget(lvar);
 			st.addStatement(fa);
 			return;
+		default:
+			break;
 		}
 	}
 

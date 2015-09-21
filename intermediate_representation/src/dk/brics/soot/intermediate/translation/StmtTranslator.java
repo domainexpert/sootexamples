@@ -23,12 +23,10 @@ import dk.brics.soot.intermediate.representation.Nop;
 import dk.brics.soot.intermediate.representation.Return;
 import dk.brics.soot.intermediate.representation.Statement;
 import dk.brics.soot.intermediate.representation.Variable;
-import dk.brics.soot.intermediate.representation.Variable.Type;
 
 public class StmtTranslator extends AbstractStmtSwitch {
 	
 	JavaTranslator jt;
-	private SootClass currentClass;
 	private SootMethod currentMethod;
 	private Map<Stmt, Statement> firstStmtToStatement;
 	private Map<Stmt, Statement> lastStmtToStatement;
@@ -45,7 +43,6 @@ public class StmtTranslator extends AbstractStmtSwitch {
 	}
 	
 	public void setCurrentClass(SootClass sc) {
-		this.currentClass = sc;
 	}
 	
 	public void setCurrentMethod(SootMethod sm) {

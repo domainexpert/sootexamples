@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import soot.EntryPoints;
 import soot.Local;
 import soot.PointsToSet;
@@ -12,6 +11,7 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.JimpleBody;
@@ -20,6 +20,7 @@ import soot.jimple.paddle.PaddleTransformer;
 import soot.jimple.spark.SparkTransformer;
 import soot.options.PaddleOptions;
 import soot.tagkit.LineNumberTag;
+import soot.tagkit.Tag;
 
 public class PointsToAnalysis {
 	
@@ -51,7 +52,7 @@ public class PointsToAnalysis {
 			setSparkPointsToAnalysis();
 
 		SootField f = getField("Container","item");		
-		Map/*<Local>*/ ls = getLocals(c,args[2],"Container");
+		Map<Integer, Local> ls = getLocals(c,args[2],"Container");
 		
 		printLocalIntersects(ls);	
 		printFieldIntersects(ls,f);		
@@ -60,7 +61,7 @@ public class PointsToAnalysis {
 	static void setSparkPointsToAnalysis() {
 		System.out.println("[spark] Starting analysis ...");
 				
-		HashMap opt = new HashMap();
+		HashMap<String, String> opt = new HashMap<String, String>();
 		opt.put("enabled","true");
 		opt.put("verbose","true");
 		opt.put("ignore-types","false");          
@@ -100,9 +101,9 @@ public class PointsToAnalysis {
 	private static void setPaddlePointsToAnalysis() {
 		System.out.println("[paddle] Starting analysis ...");
 
-		System.err.println("Soot version string: "+soot.Main.v().versionString);
+		System.err.println("Soot version string: "+soot.Main.versionString);
 
-		HashMap opt = new HashMap();
+		HashMap<String, String> opt = new HashMap<String, String>();
 		opt.put("enabled","true");
 		opt.put("verbose","true");
 		opt.put("bdd","true");
@@ -130,7 +131,7 @@ public class PointsToAnalysis {
 	}
 	
 	private static int getLineNumber(Stmt s) {
-		Iterator ti = s.getTags().iterator();
+		Iterator<Tag> ti = s.getTags().iterator();
 		while (ti.hasNext()) {
 			Object o = ti.next();
 			if (o instanceof LineNumberTag) 
@@ -140,8 +141,8 @@ public class PointsToAnalysis {
 	}
 	
 	private static SootField getField(String classname, String fieldname) {
-		Collection app = Scene.v().getApplicationClasses();
-		Iterator ci = app.iterator();
+		Collection<SootClass> app = Scene.v().getApplicationClasses();
+		Iterator<SootClass> ci = app.iterator();
 		while (ci.hasNext()) {
 			SootClass sc = (SootClass)ci.next();
 			if (sc.getName().equals(classname))
@@ -150,26 +151,26 @@ public class PointsToAnalysis {
 		throw new RuntimeException("Field "+fieldname+" was not found in class "+classname);
 	}
 	
-	private static Map/*<Integer,Local>*/ getLocals(SootClass sc, String methodname, String typename) {
-		Map res = new HashMap();
-		Iterator mi = sc.getMethods().iterator();
+	private static Map<Integer,Local> getLocals(SootClass sc, String methodname, String typename) {
+		Map<Integer, Local> res = new HashMap<Integer, Local>();
+		Iterator<SootMethod> mi = sc.getMethods().iterator();
 		while (mi.hasNext()) {
 			SootMethod sm = (SootMethod)mi.next();
 			System.err.println(sm.getName());
 			if (true && sm.getName().equals(methodname) && sm.isConcrete()) {
 				JimpleBody jb = (JimpleBody)sm.retrieveActiveBody();
-				Iterator ui = jb.getUnits().iterator();
+				Iterator<Unit> ui = jb.getUnits().iterator();
 				while (ui.hasNext()) {
 					Stmt s = (Stmt)ui.next();						
 					int line = getLineNumber(s);
 					// find definitions
-					Iterator bi = s.getDefBoxes().iterator();
+					Iterator<ValueBox> bi = s.getDefBoxes().iterator();
 					while (bi.hasNext()) {
 						Object o = bi.next();
 						if (o instanceof ValueBox) {
 							Value v = ((ValueBox)o).getValue();
 							if (v.getType().toString().equals(typename) && v instanceof Local)
-								res.put(new Integer(line),v);
+								res.put(new Integer(line), (Local) v);
 						}
 					}					
 				}
@@ -179,17 +180,17 @@ public class PointsToAnalysis {
 		return res;
 	}
 	
-	private static void printLocalIntersects(Map/*<Integer,Local>*/ ls) {
+	private static void printLocalIntersects(Map<Integer,Local> ls) {
 		soot.PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-		Iterator i1 = ls.entrySet().iterator();
+		Iterator<Map.Entry<Integer, Local>> i1 = ls.entrySet().iterator();
 		while (i1.hasNext()) {
-			Map.Entry e1 = (Map.Entry)i1.next();
+			Map.Entry<Integer, Local> e1 = (Map.Entry<Integer, Local>)i1.next();
 			int p1 = ((Integer)e1.getKey()).intValue();
 			Local l1 = (Local)e1.getValue();
 			PointsToSet r1 = pta.reachingObjects(l1);
-			Iterator i2 = ls.entrySet().iterator();
+			Iterator<Map.Entry<Integer, Local>> i2 = ls.entrySet().iterator();
 			while (i2.hasNext()) {
-				Map.Entry e2 = (Map.Entry)i2.next();
+				Map.Entry<Integer, Local> e2 = (Map.Entry<Integer, Local>)i2.next();
 				int p2 = ((Integer)e2.getKey()).intValue();
 				Local l2 = (Local)e2.getValue();
 				PointsToSet r2 = pta.reachingObjects(l2);	
@@ -200,17 +201,17 @@ public class PointsToAnalysis {
 	}
 	
 	
-	private static void printFieldIntersects(Map/*<Integer,Local>*/ ls, SootField f) {
+	private static void printFieldIntersects(Map<Integer,Local> ls, SootField f) {
 		soot.PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-		Iterator i1 = ls.entrySet().iterator();
+		Iterator<Map.Entry<Integer, Local>> i1 = ls.entrySet().iterator();
 		while (i1.hasNext()) {
-			Map.Entry e1 = (Map.Entry)i1.next();
+			Map.Entry<Integer, Local> e1 = (Map.Entry<Integer, Local>)i1.next();
 			int p1 = ((Integer)e1.getKey()).intValue();
 			Local l1 = (Local)e1.getValue();
 			PointsToSet r1 = pta.reachingObjects(l1,f);
-			Iterator i2 = ls.entrySet().iterator();
+			Iterator<Map.Entry<Integer, Local>> i2 = ls.entrySet().iterator();
 			while (i2.hasNext()) {
-				Map.Entry e2 = (Map.Entry)i2.next();
+				Map.Entry<Integer, Local> e2 = (Map.Entry<Integer, Local>)i2.next();
 				int p2 = ((Integer)e2.getKey()).intValue();
 				Local l2 = (Local)e2.getValue();
 				PointsToSet r2 = pta.reachingObjects(l2,f);	

@@ -6,6 +6,7 @@ import dk.brics.soot.intermediate.foonalasys.*;
 
 public class Main { 
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
 		String program_name = null;
 		long time0 = System.currentTimeMillis();

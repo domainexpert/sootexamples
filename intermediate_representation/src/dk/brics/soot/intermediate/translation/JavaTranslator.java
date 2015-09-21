@@ -15,16 +15,15 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.CompleteUnitGraph;
 import dk.brics.soot.intermediate.representation.Method;
-import dk.brics.soot.intermediate.representation.Statement;
 import dk.brics.soot.intermediate.representation.Variable;
 
-@SuppressWarnings("unchecked") 
 public class JavaTranslator {
 	
 	private Hierarchy h;
@@ -53,7 +52,7 @@ public class JavaTranslator {
 					st.setCurrentMethod(sm);
 				
 					CompleteUnitGraph cug = new CompleteUnitGraph(sm.retrieveActiveBody());
-					Iterator si = cug.iterator();
+					Iterator<Unit> si = cug.iterator();
 					
 					while (si.hasNext()) {
 						Stmt stmt = (Stmt)si.next();
@@ -69,7 +68,7 @@ public class JavaTranslator {
 					//System.err.println("Setting up link between the last statement and the first statement...");
 					while (si.hasNext()) {
 						Stmt stmt = (Stmt)si.next();
-						Iterator si2 = cug.getSuccsOf(stmt).iterator();
+						Iterator<Unit> si2 = cug.getSuccsOf(stmt).iterator();
 						while (si2.hasNext()) {
 							Stmt stmt2 = (Stmt)si2.next();
 							st.getLast(stmt).addSucc(st.getFirst(stmt2));
@@ -128,7 +127,7 @@ public class JavaTranslator {
 		if (expr instanceof InstanceInvokeExpr) {
 			return getTargetsOf(((InstanceInvokeExpr)expr).getBase(), expr.getMethod());
 		}
-		List<SootMethod> targets = new ArrayList(1);
+		List<SootMethod> targets = new ArrayList<SootMethod>(1);
 		targets.add(expr.getMethod());
 		return targets;
 	}
@@ -158,7 +157,7 @@ public class JavaTranslator {
 	}
 	
     boolean isApplicationClass(SootClass c) {
-    	Iterator aci = Scene.v().getApplicationClasses().iterator();
+    	Iterator<SootClass> aci = Scene.v().getApplicationClasses().iterator();
     	while (aci.hasNext()) {
     	    SootClass ac = (SootClass)aci.next();
     	    if (c.getName().equals(ac.getName())) {

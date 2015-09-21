@@ -13,8 +13,6 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.ValueBox;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.util.dot.DotGraph;
 
 /** A <code>Foonalysis</code> object encapsulates a foonalysis performed
  *  on a collection of classes.
@@ -26,10 +24,10 @@ public class Foonalasys {
     private static final boolean DEBUG = false;
 
     private JavaTranslator jt;
-    private Map/*<ValueBox,String>*/ sourcefile_map;
-    private Map/*<ValueBox,String>*/ class_map;
-    private Map/*<ValueBox,String>*/ method_map;
-    private Map/*<ValueBox,Integer>*/ line_map;
+    private Map<ValueBox,String> sourcefile_map;
+    private Map<ValueBox,String> class_map;
+    private Map<ValueBox,String> method_map;
+    private Map<ValueBox,Integer> line_map;
     
     // Make sure we get line numbers
     static {
@@ -102,7 +100,7 @@ public class Foonalasys {
     public static void loadClass(String name) {
     	SootClass c = Scene.v().loadClassAndSupport(name);
     	c.setApplicationClass();
-    	Iterator mi = c.getMethods().iterator();
+    	Iterator<SootMethod> mi = c.getMethods().iterator();
     	while (mi.hasNext()) {
     		SootMethod sm = (SootMethod)mi.next();
     		if (sm.isConcrete()) {

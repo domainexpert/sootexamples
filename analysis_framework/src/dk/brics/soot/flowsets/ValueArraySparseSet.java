@@ -1,6 +1,7 @@
 package dk.brics.soot.flowsets;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.toolkits.scalar.AbstractFlowSet;
@@ -20,7 +21,8 @@ import soot.EquivTo;
  * </ol> 
  * @author Changes made by Árni Einarsson
  * 
- */public class ValueArraySparseSet extends AbstractFlowSet {
+ */
+public class ValueArraySparseSet<T> extends AbstractFlowSet<T> {
 	protected static final int DEFAULT_SIZE = 8;
 	protected int numElements;
 	protected int maxElements;
@@ -32,7 +34,7 @@ import soot.EquivTo;
 		numElements = 0;
 	}
 
-	protected ValueArraySparseSet(ValueArraySparseSet other) {
+	protected ValueArraySparseSet(ValueArraySparseSet<T> other) {
 		numElements = other.numElements;
 		maxElements = other.maxElements;
 		elements = (Object[]) other.elements.clone();
@@ -43,13 +45,13 @@ import soot.EquivTo;
 		return (flowSet instanceof ValueArraySparseSet);
 	}
 
-	public ValueArraySparseSet clone() {
-		return new ValueArraySparseSet(this);
+	public ValueArraySparseSet<T> clone() {
+		return new ValueArraySparseSet<T>(this);
 	}
 
-	public Object emptySet() {
-		return new ValueArraySparseSet();
-	}
+//	public Object emptySet() {
+	//	return new ValueArraySparseSet();
+//	}
 
 	public void clear() {
 		numElements = 0;
@@ -64,8 +66,10 @@ import soot.EquivTo;
 	}
 
 	/** Returns a unbacked list of elements in this set. */
-	public List<Object> toList() {
-		Object[] copiedElements = new Object[numElements];
+	public List<T> toList() {
+		@SuppressWarnings("unchecked")
+		T[] copiedElements = (T[]) new Object[numElements];
+		
 		System.arraycopy(elements, 0, copiedElements, 0, numElements);
 		return Arrays.asList(copiedElements);
 	}
@@ -106,10 +110,10 @@ import soot.EquivTo;
 		}
 	}
 
-	public void union(FlowSet otherFlow, FlowSet destFlow) {
+	public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
 		if (sameType(otherFlow) && sameType(destFlow)) {
-			ValueArraySparseSet other = (ValueArraySparseSet) otherFlow;
-			ValueArraySparseSet dest = (ValueArraySparseSet) destFlow;
+			ValueArraySparseSet<T> other = (ValueArraySparseSet<T>) otherFlow;
+			ValueArraySparseSet<T> dest = (ValueArraySparseSet<T>) destFlow;
 
 			// For the special case that dest == other
 			if (dest == other) {
@@ -129,14 +133,14 @@ import soot.EquivTo;
 			super.union(otherFlow, destFlow);
 	}
 
-	public void intersection(FlowSet otherFlow, FlowSet destFlow) {
+	public void intersection(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
 		if (sameType(otherFlow) && sameType(destFlow)) {
-			ValueArraySparseSet other = (ValueArraySparseSet) otherFlow;
-			ValueArraySparseSet dest = (ValueArraySparseSet) destFlow;
-			ValueArraySparseSet workingSet;
+			ValueArraySparseSet<T> other = (ValueArraySparseSet<T>) otherFlow;
+			ValueArraySparseSet<T> dest = (ValueArraySparseSet<T>) destFlow;
+			ValueArraySparseSet<T> workingSet;
 
 			if (dest == other || dest == this)
-				workingSet = new ValueArraySparseSet();
+				workingSet = new ValueArraySparseSet<T>();
 			else {
 				workingSet = dest;
 				workingSet.clear();
@@ -153,14 +157,14 @@ import soot.EquivTo;
 			super.intersection(otherFlow, destFlow);
 	}
 
-	public void difference(FlowSet otherFlow, FlowSet destFlow) {
+	public void difference(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
 		if (sameType(otherFlow) && sameType(destFlow)) {
-			ValueArraySparseSet other = (ValueArraySparseSet) otherFlow;
-			ValueArraySparseSet dest = (ValueArraySparseSet) destFlow;
-			ValueArraySparseSet workingSet;
+			ValueArraySparseSet<T> other = (ValueArraySparseSet<T>) otherFlow;
+			ValueArraySparseSet<T> dest = (ValueArraySparseSet<T>) destFlow;
+			ValueArraySparseSet<T> workingSet;
 
 			if (dest == other || dest == this)
-				workingSet = new ValueArraySparseSet();
+				workingSet = new ValueArraySparseSet<T>();
 			else {
 				workingSet = dest;
 				workingSet.clear();
@@ -190,7 +194,8 @@ import soot.EquivTo;
 
 	public boolean equals(Object otherFlow) {
 		if (sameType(otherFlow)) {
-			ValueArraySparseSet other = (ValueArraySparseSet) otherFlow;
+			@SuppressWarnings("unchecked")
+			ValueArraySparseSet<T> other = (ValueArraySparseSet<T>) otherFlow;
 
 			if (other.numElements != this.numElements)
 				return false;
@@ -215,9 +220,9 @@ import soot.EquivTo;
 			return super.equals(otherFlow);
 	}
 
-	public void copy(FlowSet destFlow) {
+	public void copy(FlowSet<T> destFlow) {
 		if (sameType(destFlow)) {
-			ValueArraySparseSet dest = (ValueArraySparseSet) destFlow;
+			ValueArraySparseSet<T> dest = (ValueArraySparseSet<T>) destFlow;
 
 			while (dest.maxElements < this.maxElements)
 				dest.doubleCapacity();
@@ -228,5 +233,16 @@ import soot.EquivTo;
 					this.numElements);
 		} else
 			super.copy(destFlow);
+	}
+
+	@Override
+	public FlowSet<T> emptySet() {
+		return new ValueArraySparseSet<T>();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<T> iterator() {
+		return (Iterator<T>) Arrays.asList(this.elements).iterator();
 	}
 }
