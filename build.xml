@@ -9,12 +9,17 @@
 	<property name="build" location="build"/>
 	<property name="soot.output" location="soot_output"/>
 	<property name="soot.lib.dir" location="/Users/andrew/software/soot/lib"/>
+	<property name="local.lib.dir" location="/Users/andrew/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
 	<property name="com.domainexpert.build" location="${build}/main"/>
 	
 	<!-- properties for the original call graph example -->
 	<property name="dk.brics.soot.callgraphs.src" location="call_graph/src"/>
 	<property name="dk.brics.soot.callgraphs.build" location="${build}/call_graph"/>
+
+	<!-- properties for the original points-to analysis example -->
+	<property name="dk.brics.paddle.src" location="pointsto/src"/>
+	<property name="dk.brics.paddle.build" location="${build}/pointsto"/>
 	
 	<!-- Soot library paths -->
 	<path id="soot.lib">
@@ -50,6 +55,13 @@
 		<pathelement path="${dk.brics.soot.callgraphs.build}"/>
 	</path>
 
+	<!-- The value of -soot-class-path for the original points-to analysis example -->
+	<path id="dk.brics.paddle.soot.class.path">
+		<path refid="soot.class.path"/>
+		<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
+		<pathelement path="${dk.brics.paddle.build}"/>
+	</path>
+
 	<target name="init">
 		<!-- Create the time stamp -->
 		<tstamp/>
@@ -63,6 +75,9 @@
 		
 		<!-- Create the build directory of the original call graph example -->
 		<mkdir dir="${dk.brics.soot.callgraphs.build}"/>
+		
+		<!-- Create the build directory of the points-to example -->
+		<mkdir dir="${dk.brics.paddle.build}"/>
 	</target>
 
 	<target name="compile" depends="init"
@@ -78,6 +93,13 @@
 			destdir="${dk.brics.soot.callgraphs.build}"
 			includeantruntime="false" deprecation="on">
 			<classpath refid="soot.lib"/>
+		</javac>
+
+		<!-- Compile the original points-to analysis example -->
+		<javac srcdir="${dk.brics.paddle.src}"
+			destdir="${dk.brics.paddle.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="dk.brics.paddle.soot.class.path"/>
 		</javac>
 	</target>
 
@@ -298,6 +320,21 @@
 				construction significantly.
 			-->
 			<arg value="-no-bodies-for-excluded"/>
+		</java>
+	</target>
+
+	<!-- Runs the original points-to analysis example -->
+	<target name="original-pointsto" depends="compile"
+		description="run the original points-to analysis example">
+		<java className="dk.brics.paddle.PointsToAnalysis"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.paddle.build}"/>
+			</classpath>
+			<arg value="spark"/>
+			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
+			<arg pathref="dk.brics.paddle.soot.class.path"/>
 		</java>
 	</target>
 </project>

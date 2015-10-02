@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import soot.EntryPoints;
+import soot.G;
 import soot.Local;
 import soot.PointsToSet;
 import soot.Scene;
@@ -39,8 +41,17 @@ public class PointsToAnalysis {
 	}
 	
 	public static void main(String[] args) {
-		loadClass("Item",false);
-		loadClass("Container",false);
+		/*
+		 * The following has to be added for the classes to
+		 * be found by Soot
+		 */
+		soot.Scene.v().setSootClassPath(args[2]);
+
+		/*
+		 * Note that in the original version there was no package name
+		 */
+		loadClass("com.domainexpert.survivor.test.Item",false);
+		loadClass("com.domainexpert.survivor.test.Container",false);
 		SootClass c = loadClass(args[1],true);
 
 		soot.Scene.v().loadNecessaryClasses();
@@ -51,8 +62,8 @@ public class PointsToAnalysis {
 		else if (args[0].equals("spark"))
 			setSparkPointsToAnalysis();
 
-		SootField f = getField("Container","item");		
-		Map<Integer, Local> ls = getLocals(c,args[2],"Container");
+		SootField f = getField("com.domainexpert.survivor.test.Container","item");		
+		Map<Integer, Local> ls = getLocals(c,args[2],"com.domainexpert.survivor.test.Container");
 		
 		printLocalIntersects(ls);	
 		printFieldIntersects(ls,f);		
