@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import soot.EntryPoints;
-import soot.G;
 import soot.Local;
 import soot.PointsToSet;
 import soot.Scene;
