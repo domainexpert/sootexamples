@@ -44,8 +44,11 @@ public class PointsToAnalysis {
 		 * The following has to be added for the classes to
 		 * be found by Soot
 		 */
-		soot.Scene.v().setSootClassPath(args[2]);
-
+		soot.options.Options.v().set_soot_classpath(args[2]);
+		soot.options.Options.v().set_output_dir(args[3]);
+		soot.options.Options.v().set_no_bodies_for_excluded(true);
+		soot.options.Options.v().set_allow_phantom_refs(true);
+		
 		/*
 		 * Note that in the original version there was no package name
 		 */
@@ -117,7 +120,7 @@ public class PointsToAnalysis {
 		opt.put("enabled","true");
 		opt.put("verbose","true");
 		opt.put("bdd","true");
-		opt.put("backend","buddy");
+		opt.put("backend","javabdd");
 		opt.put("context","kcfa");
 		opt.put("k","2");
 		//		opt.put("context-heap","true");

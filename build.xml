@@ -8,8 +8,8 @@
 	<property name="src" location="src"/>
 	<property name="build" location="build"/>
 	<property name="soot.output" location="soot_output"/>
-	<property name="soot.lib.dir" location="/Users/andrew/software/soot/lib"/>
-	<property name="local.lib.dir" location="/Users/andrew/lib"/>
+	<property name="soot.lib.dir" location="${user.home}/software/soot/lib"/>
+	<property name="local.lib.dir" location="${user.home}/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
 	<property name="com.domainexpert.build" location="${build}/main"/>
 	
@@ -324,7 +324,7 @@
 	</target>
 
 	<!-- Runs the original points-to analysis example -->
-	<target name="original-pointsto" depends="compile"
+	<target name="original-pointsto-spark" depends="compile"
 		description="run the original points-to analysis example">
 		<java className="dk.brics.paddle.PointsToAnalysis"
 			fork="yes" maxmemory="2G">
@@ -335,6 +335,29 @@
 			<arg value="spark"/>
 			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
 			<arg pathref="dk.brics.paddle.soot.class.path"/>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+	
+	<!-- Runs the original points-to analysis example -->
+	<target name="original-pointsto-paddle" depends="compile"
+		description="run the original points-to analysis example">
+		<fail
+			message="Not able to run Paddle."
+		/>	
+		<java className="dk.brics.paddle.PointsToAnalysis"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
+				<pathelement path="${user.home}/Documents/workspace/jedd-0.4/runtime/lib/jedd-runtime.jar"/>
+				<pathelement path="${user.home}/src/research/projects/analysis/software/chord-libsrc-2.1/JavaBDD/javabdd-1.0b2.jar"/>
+				<pathelement path="${dk.brics.paddle.build}"/>
+			</classpath>
+			<arg value="paddle"/>
+			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
+			<arg pathref="dk.brics.paddle.soot.class.path"/>
+			<arg value="${soot.output}"/>
 		</java>
 	</target>
 </project>
