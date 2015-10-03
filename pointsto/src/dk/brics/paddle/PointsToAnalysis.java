@@ -120,6 +120,7 @@ public class PointsToAnalysis {
 		opt.put("enabled","true");
 		opt.put("verbose","true");
 		opt.put("bdd","true");
+		// This can either be buddy, cudd, sable, javabdd, or none
 		opt.put("backend","javabdd");
 		opt.put("context","kcfa");
 		opt.put("k","2");
