@@ -1,0 +1,6 @@
+This project contains the examples from "A Survivor's Guide to Java Program
+Analysis in Soot", extracted from the Soot source tree in September 2015.
+It also contains examples from Raja Vallee-Rai's thesis "Soot: A Java
+Bytecode Optimization Framework" in com.domainexpert.soot.thesis package
+under src directory.
+
