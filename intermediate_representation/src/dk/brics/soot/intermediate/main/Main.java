@@ -2,6 +2,7 @@ package dk.brics.soot.intermediate.main;
 
 import java.io.IOException;
 
+import soot.Scene;
 import dk.brics.soot.intermediate.foonalasys.*;
 
 public class Main { 
@@ -10,9 +11,16 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		String program_name = null;
 		long time0 = System.currentTimeMillis();
+
+		// Different from the original, here we set the
+		// soot class path using the given first argument
+		if (args.length >= 1) {
+			Scene.v().setSootClassPath(args[0]);
+		}
 		
 		System.out.println("Loading classes...");
-		for (int i = 0 ; i < args.length ; i++) {
+
+		for (int i = 1 ; i < args.length ; i++) {
 			String classname = args[i];
 			if (classname.endsWith(".class")) {
 				classname = classname.substring(0,classname.length()-6).replace('/','.');

@@ -20,6 +20,10 @@
 	<!-- properties for the original points-to analysis example -->
 	<property name="dk.brics.paddle.src" location="pointsto/src"/>
 	<property name="dk.brics.paddle.build" location="${build}/pointsto"/>
+
+	<!-- properties for the original intermediate representation example -->
+	<property name="dk.brics.soot.intermediate.src" location="intermediate_representation/src"/>
+	<property name="dk.brics.soot.intermediate.build" location="${build}/intermediate_representation"/>
 	
 	<!-- Soot library paths -->
 	<path id="soot.lib">
@@ -62,11 +66,21 @@
 		<pathelement path="${dk.brics.paddle.build}"/>
 	</path>
 
+	<!-- The value of -soot-class-path for the original intermediate representation example -->
+	<path id="dk.brics.soot.intermediate.soot.class.path">
+		<path refid="jre.lib"/>
+		<path refid="soot.lib"/>
+		<pathelement path="${dk.brics.soot.intermediate.build}"/>
+		<pathelement path="${com.domainexpert.build}"/>
+	</path>
+	
 	<target name="init">
 		<!-- Create the time stamp -->
 		<tstamp/>
+		
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build}"/>
+		
 		<!-- Create the Soot output directory -->
 		<mkdir dir="${soot.output}"/>
 
@@ -78,6 +92,9 @@
 		
 		<!-- Create the build directory of the points-to example -->
 		<mkdir dir="${dk.brics.paddle.build}"/>
+		
+		<!-- Create the build directory of the intermediate representation example -->
+		<mkdir dir="${dk.brics.soot.intermediate.build}"/>
 	</target>
 
 	<target name="compile" depends="init"
@@ -100,6 +117,13 @@
 			destdir="${dk.brics.paddle.build}"
 			includeantruntime="false" deprecation="on">
 			<classpath refid="dk.brics.paddle.soot.class.path"/>
+		</javac>
+		
+		<!-- Compile the original intermediate representation example -->
+		<javac srcdir="${dk.brics.soot.intermediate.src}"
+			destdir="${dk.brics.soot.intermediate.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="soot.lib"/>
 		</javac>
 	</target>
 
@@ -358,6 +382,20 @@
 			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
 			<arg pathref="dk.brics.paddle.soot.class.path"/>
 			<arg value="${soot.output}"/>
+		</java>
+	</target>
+	
+	<!-- Runs the original intermediate representation example -->
+	<target name="original-intermediate" depends="compile"
+		description="run the original points-to analysis example">
+		<java className="dk.brics.soot.intermediate.main.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.soot.intermediate.build}"/>
+			</classpath>
+			<arg pathref="dk.brics.soot.intermediate.soot.class.path"/>
+			<arg value="com.domainexpert.survivor.test.FooUser"/>
 		</java>
 	</target>
 </project>
