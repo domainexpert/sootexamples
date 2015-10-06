@@ -23,7 +23,11 @@
 
 	<!-- properties for the original intermediate representation example -->
 	<property name="dk.brics.soot.intermediate.src" location="intermediate_representation/src"/>
-	<property name="dk.brics.soot.intermediate.build" location="${build}/intermediate_representation"/>
+	<property name="dk.brics.soot.intermediate.build" location="${build}/intermediate_representation"/>	
+	
+	<!-- properties for the live variable analysis runner -->
+	<property name="dk.brics.soot.analysis_framework.src" location="analysis_framework/src"/>
+	<property name="dk.brics.soot.analysis_framework.build" location="${build}/analysis_framework"/>
 	
 	<!-- Soot library paths -->
 	<path id="soot.lib">
@@ -32,7 +36,6 @@
 
 	<!-- Java library paths -->
 	<path id="jre.lib">
-		<pathelement path="."/>
 		<pathelement path="${jdk.lib.dir}/alt-rt.jar"/>
 		<pathelement path="${jdk.lib.dir}/alt-string.jar"/>
 		<pathelement path="${jdk.lib.dir}/charsets.jar"/>
@@ -74,6 +77,12 @@
 		<pathelement path="${com.domainexpert.build}"/>
 	</path>
 	
+	<!-- The value of -soot-class-path for the live variable analyis -->
+	<path id="dk.brics.soot.analysis_framework.soot.class.path">
+		<path refid="jre.lib"/>
+		<pathelement path="${dk.brics.soot.analysis_framework.build}"/>
+	</path>
+		
 	<target name="init">
 		<!-- Create the time stamp -->
 		<tstamp/>
@@ -95,6 +104,9 @@
 		
 		<!-- Create the build directory of the intermediate representation example -->
 		<mkdir dir="${dk.brics.soot.intermediate.build}"/>
+		
+		<!-- Create the build directory of the analysis framework -->
+		<mkdir dir="${dk.brics.soot.analysis_framework.build}"/>
 	</target>
 
 	<target name="compile" depends="init"
@@ -125,6 +137,14 @@
 			includeantruntime="false" deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
+
+		<!-- Compile the analysis framework example -->
+		<javac srcdir="${dk.brics.soot.analysis_framework.src}"
+			destdir="${dk.brics.soot.analysis_framework.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
+	
 	</target>
 
 	<target name="clean"
@@ -396,6 +416,40 @@
 			</classpath>
 			<arg pathref="dk.brics.soot.intermediate.soot.class.path"/>
 			<arg value="com.domainexpert.survivor.test.FooUser"/>
+		</java>
+	</target>
+
+	<!-- Run hello world generator (adapted from Vallee-Rai's thesis) -->
+	<target name="thesis-helloworld" depends="compile"
+		description="run the Hello world! synthesis example from Vallee-Rai's thesis">
+		<java className="com.domainexpert.soot.thesis.helloworld.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+	
+	<!--
+		Run live variable analysis. The runner is included in
+		Soot Survivor's Guide, but the analysis itself is part of Soot.
+	-->
+	<target name="original-livevariable" depends="compile"
+		description="run Soot's live variables analysis using JDK class">
+		<java className="dk.brics.soot.RunLiveAnalysis"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.soot.analysis_framework.build}"/>
+			</classpath>
+			
+			<!-- The class to analyze -->
+			<arg value="testers.LiveVarsClass"/>
+			
+			<!-- The value for -soot-class-path -->
+			<arg pathref="dk.brics.soot.analysis_framework.soot.class.path"/>
 		</java>
 	</target>
 </project>

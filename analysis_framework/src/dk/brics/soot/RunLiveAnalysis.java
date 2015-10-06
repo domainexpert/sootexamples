@@ -10,7 +10,6 @@ import java.util.List;
 public class RunLiveAnalysis
 {
 	public static void main(String[] args) {
-		args = new String[] {"testers.LiveVarsClass"};
 		
 		if (args.length == 0) {
 			System.out.println("Usage: java RunLiveAnalysis class_to_analyse");
@@ -18,11 +17,20 @@ public class RunLiveAnalysis
 		}
 
 		String sep = File.separator;
-		String pathSep = File.pathSeparator;
-		String path = System.getProperty("java.home") + sep + "lib" + sep
-				+ "rt.jar";
-		path += pathSep + "." + sep + "tutorial" + sep + "guide" + sep
-				+ "examples" + sep + "analysis_framework" + sep + "src";
+		
+		// We replace the following reference to rt.jar with
+		// a Soot class path provided by the user. The class path
+		// should point to JDK jar files, which differ between OSes.
+		// OS X, for example has classes.jar but not rt.jar
+		
+//		String pathSep = File.pathSeparator;
+//		String path = System.getProperty("java.home") + sep + "lib" + sep
+//				+ "rt.jar";
+//		path += pathSep + "." + sep + "tutorial" + sep + "guide" + sep
+//				+ "examples" + sep + "analysis_framework" + sep + "src";
+		
+		// The Soot class path provided by the user
+		String path = args[1];
 		Options.v().set_soot_classpath(path);
 
 		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
