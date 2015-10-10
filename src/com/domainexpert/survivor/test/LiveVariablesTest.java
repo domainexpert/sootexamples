@@ -4,7 +4,8 @@ public class LiveVariablesTest {
 
 	public static void main(String[] args) {
 		int x,y,z;
-		x = Integer.getInteger(args[1]).intValue();
+
+		x = Integer.valueOf(args[0]).intValue();
 		while (x>1) {
 			y = x/2;
 			if (y>3)

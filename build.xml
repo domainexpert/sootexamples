@@ -491,11 +491,10 @@
 				<pathelement path="${com.domainexpert.build}"/>
 			</classpath>
 			<!--
-				This example has a complex enough control flow, with
-				some gotos.
+				This is an example with simple loop
 			-->
 			<arg value="--app"/>
-			<arg value="com.domainexpert.survivor.test.VeryBusyExpressionTest"/>
+			<arg value="com.domainexpert.survivor.test.SimpleLoop"/>
 			<arg value="-verbose"/>
 			<arg value="-f"/>
 			<arg value="class"/>
@@ -506,10 +505,11 @@
 		</java>
 		
 		<echo message="Running instrumented program ..."/>
-		<java className="com.domainexpert.survivor.test.VeryBusyExpressionTest">
+		<java className="com.domainexpert.survivor.test.SimpleLoop">
 			<classpath>
 				<pathelement path="${soot.output}"/>				
 			</classpath>
+			<arg value="3"/>
 		</java>
 	</target>
 
