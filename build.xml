@@ -513,4 +513,36 @@
 		</java>
 	</target>
 
+	<!-- Run the scene evaluator from Vallee-Rai's thesis (Chapter 5) -->
+	<target name="thesis-sceneevaluator" depends="compile"
+		description="run the scene evaluator example from Vallee-Rai's thesis">
+		<java className="com.domainexpert.soot.thesis.scene.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+
+			<!-- Here we still use the SimpleLoop program -->
+			<arg value="-app"/>
+			<arg value="com.domainexpert.survivor.test.SimpleLoop"/>
+
+			<!-- This transformation produces no output -->
+			<arg value="-f"/>
+			<arg value="none"/>
+			
+			<!-- The Soot class path -->
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+		</java>
+	</target>
+
+	<target name="soot-options">
+		<java className="soot.Main">
+			<classpath>
+				<path refid="soot.lib"/>
+			</classpath>
+			<arg value="-help"/>
+		</java>
+	</target>
 </project>
