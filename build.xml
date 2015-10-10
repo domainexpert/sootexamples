@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="SootSurvivor" default="compile" basedir=".">
+<project name="Soot Tests" default="compile" basedir=".">
 	<description>
     Build file for examples from "A Survivor's Guide to Java Program Analysis in Soot"
   </description>
@@ -452,4 +452,65 @@
 			<arg pathref="dk.brics.soot.analysis_framework.soot.class.path"/>
 		</java>
 	</target>
+	
+	<!-- Run constant propagation example (adapted from Vallee-Rai's thesis) -->
+	<target name="thesis-constantpropagation" depends="compile"
+		description="run the constant propagation synthesis example from Vallee-Rai's thesis">
+		<java className="com.domainexpert.soot.thesis.constantpropagation.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<!--
+				This example resulted in constant replacements in two statements.
+				Compare ${soot.output}/com.domainexpert.survivor.test.VeryBusyExpressionTest.jimple
+				for this target and the jimple target (which would simply produce the
+				Jimple representation.
+			-->
+			<arg value="com.domainexpert.survivor.test.VeryBusyExpressionTest"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-verbose"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+
+	<!-- Run constant propagation example (adapted from Vallee-Rai's thesis) -->
+	<target name="thesis-instrumentation" depends="compile"
+		description="run the instrumentation example from Vallee-Rai's thesis">
+
+		<echo message="Instrumenting program ..."/>
+		<java className="com.domainexpert.soot.thesis.instrumentation.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<!--
+				This example has a complex enough control flow, with
+				some gotos.
+			-->
+			<arg value="--app"/>
+			<arg value="com.domainexpert.survivor.test.VeryBusyExpressionTest"/>
+			<arg value="-verbose"/>
+			<arg value="-f"/>
+			<arg value="class"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+		</java>
+		
+		<echo message="Running instrumented program ..."/>
+		<java className="com.domainexpert.survivor.test.VeryBusyExpressionTest">
+			<classpath>
+				<pathelement path="${soot.output}"/>				
+			</classpath>
+		</java>
+	</target>
+
 </project>
