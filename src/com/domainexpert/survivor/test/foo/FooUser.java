@@ -1,5 +1,12 @@
-package com.domainexpert.survivor.test;
+package com.domainexpert.survivor.test.foo;
 
+/**
+ * This class is part of the test subject of the intermediate
+ * representation example from the Soot Survivor's Guide.
+ * 
+ * @author andrew
+ *
+ */
 public class FooUser {
 
 	private static Foo someMethod() {

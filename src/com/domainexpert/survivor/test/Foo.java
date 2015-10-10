@@ -1,17 +1,23 @@
 package com.domainexpert.survivor.test;
 
 /**
- * This is the example of Figure 14 of the
- * Soot Survivor's Guide.
+ * This is the code example from Page 10
+ * of SootSurvivor's Guide.
  * 
  * @author andrew
  *
  */
 public class Foo {
+	
 	@SuppressWarnings("unused")
-	private int i;
-
-	public void foo(int j) {
-		this.i = j;
+	public static void main(String[] args) {
+		Foo f = new Foo();
+		int a = 7;
+		int b = 14;
+		int x = (f.bar(21) + a) * b;
+	}
+	
+	public int bar(int n) {
+		return n + 42;
 	}
 }

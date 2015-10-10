@@ -407,7 +407,7 @@
 	
 	<!-- Runs the original intermediate representation example -->
 	<target name="original-intermediate" depends="compile"
-		description="run the original points-to analysis example">
+		description="run the original intermediate representation example">
 		<java className="dk.brics.soot.intermediate.main.Main"
 			fork="yes" maxmemory="2G">
 			<classpath>
@@ -415,7 +415,7 @@
 				<pathelement path="${dk.brics.soot.intermediate.build}"/>
 			</classpath>
 			<arg pathref="dk.brics.soot.intermediate.soot.class.path"/>
-			<arg value="com.domainexpert.survivor.test.FooUser"/>
+			<arg value="com.domainexpert.survivor.test.foo.FooUser"/>
 		</java>
 	</target>
 

@@ -1,8 +1,9 @@
-package com.domainexpert.survivor;
+package com.domainexpert.survivor.test;
 
 /**
- * This class is for demonstrating the different of
- * Jimple and Shimple representations.
+ * This class is for demonstrating the difference of
+ * Jimple and Shimple representations. It is from
+ * Page 11 of the Soot Survivor's Guide.
  * 
  * @author andrew
  *
