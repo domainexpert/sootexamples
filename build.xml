@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Soot Tests" default="compile" basedir=".">
+	<description>
+    Build file for examples from "A Survivor's Guide to Java Program Analysis in Soot"
+  </description>
+
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="build" location="build"/>
+	<property name="soot.output" location="soot_output"/>
+	<property name="soot.lib.dir" location="${user.home}/software/soot/lib"/>
+	<property name="local.lib.dir" location="${user.home}/lib"/>
+	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
+	<property name="com.domainexpert.build" location="${build}/main"/>
+	
+	<!-- properties for the original call graph example -->
+	<property name="dk.brics.soot.callgraphs.src" location="call_graph/src"/>
+	<property name="dk.brics.soot.callgraphs.build" location="${build}/call_graph"/>
+
+	<!-- properties for the original points-to analysis example -->
+	<property name="dk.brics.paddle.src" location="pointsto/src"/>
+	<property name="dk.brics.paddle.build" location="${build}/pointsto"/>
+
+	<!-- properties for the original intermediate representation example -->
+	<property name="dk.brics.soot.intermediate.src" location="intermediate_representation/src"/>
+	<property name="dk.brics.soot.intermediate.build" location="${build}/intermediate_representation"/>	
+	
+	<!-- properties for the live variable analysis runner -->
+	<property name="dk.brics.soot.analysis_framework.src" location="analysis_framework/src"/>
+	<property name="dk.brics.soot.analysis_framework.build" location="${build}/analysis_framework"/>
+	
+	<!-- Soot library paths -->
+	<path id="soot.lib">
+		<pathelement path="${soot.lib.dir}/soot-trunk.jar"/>
+	</path>
+
+	<!-- Java library paths -->
+	<path id="jre.lib">
+		<pathelement path="${jdk.lib.dir}/alt-rt.jar"/>
+		<pathelement path="${jdk.lib.dir}/alt-string.jar"/>
+		<pathelement path="${jdk.lib.dir}/charsets.jar"/>
+		<pathelement path="${jdk.lib.dir}/classes.jar"/>
+		<pathelement path="${jdk.lib.dir}/dt.jar"/>
+		<pathelement path="${jdk.lib.dir}/jce.jar"/>
+		<pathelement path="${jdk.lib.dir}/jconsole.jar"/>
+		<pathelement path="${jdk.lib.dir}/jsse.jar"/>
+		<pathelement path="${jdk.lib.dir}/management-agent.jar"/>
+		<pathelement path="${jdk.lib.dir}/ui.jar"/>
+	</path>
+
+	<!-- The value of -soot-class-path -->
+	<path id="soot.class.path">
+		<path refid="jre.lib"/>
+		<path refid="soot.lib"/>
+		<pathelement path="${com.domainexpert.build}"/>
+	</path>
+
+	<!-- The value of -soot-class-path for the original call graph example -->
+	<path id="dk.brics.soot.callgraphs.soot.class.path">
+		<path refid="jre.lib"/>
+		<path refid="soot.lib"/>
+		<pathelement path="${dk.brics.soot.callgraphs.build}"/>
+	</path>
+
+	<!-- The value of -soot-class-path for the original points-to analysis example -->
+	<path id="dk.brics.paddle.soot.class.path">
+		<path refid="soot.class.path"/>
+		<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
+		<pathelement path="${dk.brics.paddle.build}"/>
+	</path>
+
+	<!-- The value of -soot-class-path for the original intermediate representation example -->
+	<path id="dk.brics.soot.intermediate.soot.class.path">
+		<path refid="jre.lib"/>
+		<path refid="soot.lib"/>
+		<pathelement path="${dk.brics.soot.intermediate.build}"/>
+		<pathelement path="${com.domainexpert.build}"/>
+	</path>
+	
+	<!-- The value of -soot-class-path for the live variable analyis -->
+	<path id="dk.brics.soot.analysis_framework.soot.class.path">
+		<path refid="jre.lib"/>
+		<pathelement path="${dk.brics.soot.analysis_framework.build}"/>
+	</path>
+		
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp/>
+		
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+		
+		<!-- Create the Soot output directory -->
+		<mkdir dir="${soot.output}"/>
+
+		<!-- Create the build directory for own-made programs -->
+		<mkdir dir="${com.domainexpert.build}"/>
+		
+		<!-- Create the build directory of the original call graph example -->
+		<mkdir dir="${dk.brics.soot.callgraphs.build}"/>
+		
+		<!-- Create the build directory of the points-to example -->
+		<mkdir dir="${dk.brics.paddle.build}"/>
+		
+		<!-- Create the build directory of the intermediate representation example -->
+		<mkdir dir="${dk.brics.soot.intermediate.build}"/>
+		
+		<!-- Create the build directory of the analysis framework -->
+		<mkdir dir="${dk.brics.soot.analysis_framework.build}"/>
+	</target>
+
+	<target name="compile" depends="init"
+        description="compile the source">
+		<!-- Compile the own-made programs -->
+		<javac srcdir="${src}" destdir="${com.domainexpert.build}" includeantruntime="false"
+			deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
+		
+		<!-- Compile the original call graph example -->
+		<javac srcdir="${dk.brics.soot.callgraphs.src}"
+			destdir="${dk.brics.soot.callgraphs.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
+
+		<!-- Compile the original points-to analysis example -->
+		<javac srcdir="${dk.brics.paddle.src}"
+			destdir="${dk.brics.paddle.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="dk.brics.paddle.soot.class.path"/>
+		</javac>
+		
+		<!-- Compile the original intermediate representation example -->
+		<javac srcdir="${dk.brics.soot.intermediate.src}"
+			destdir="${dk.brics.soot.intermediate.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
+
+		<!-- Compile the analysis framework example -->
+		<javac srcdir="${dk.brics.soot.analysis_framework.src}"
+			destdir="${dk.brics.soot.analysis_framework.build}"
+			includeantruntime="false" deprecation="on">
+			<classpath refid="soot.lib"/>
+		</javac>
+	
+	</target>
+
+	<target name="clean"
+        description="clean up">
+		<!-- Delete the build and Soot output directory trees -->
+		<delete dir="${build}"/>
+		<delete dir="${soot.output}"/>
+	</target>
+
+	<!-- This outputs Jimple representation of the bytecode -->	
+	<target name="jimple" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!-- This outputs Shimple representation of the bytecode -->
+	<target name="shimple" depends="compile"
+	  		description="output shimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="shimple"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!--
+		This outputs Jimple representation of the bytecode
+		with optimization using constant propagation and folder.
+	-->	
+	<target name="jimple-optimized" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-O"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!--
+		This outputs Jimple representation of the bytecode
+		with optimization using Shimple constant propagation
+		and folder.		
+	-->
+	<target name="jimple-optimized-via-shimple" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="jimple"/>
+			<arg value="-via-shimple"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-O"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!-- This outputs Grimple representation of the bytecode -->	
+	<target name="grimple" depends="compile"
+	  		description="output jimple code">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-f"/>
+			<arg value="G"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainaexpert.build}"/>
+		</java>
+	</target>
+
+	<!-- This performs null pointer analysis -->
+	<target name="null-pointer-analysis" depends="compile"
+		description="run null pointer analysis">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-xml-attributes"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+			<arg value="-p"/>
+			<arg value="jap.npcolorer"/>
+			<arg value="on"/>
+			<arg value="com.domainexpert.survivor.test.NullPointerTest"/>
+		</java>	
+	</target>
+
+	<!-- This performs array bounds check -->
+	<target name="array-bounds-check" depends="compile"
+		description="run array bounds check">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-xml-attributes"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+			<arg value="-p"/>
+			<arg value="jap.abc"/>
+			<arg value="on"/>
+			<arg value="-p"/>
+			<arg value="jap.abc"/>
+			<arg value="add-color-tags:true"/>
+			<arg value="com.domainexpert.survivor.test.ArrayBoundsTest"/>
+		</java>
+	</target>
+
+	<!-- This performs live variable analysis -->
+	<target name="liveness" depends="compile"
+		description="run live variable analysis">
+		<java classname="soot.Main">
+			<classpath refid="soot.lib"/>
+			<arg value="-xml-attributes"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+			<arg value="-p"/>
+			<arg value="jap.lvtagger"/>
+			<arg value="on"/>
+			<arg value="com.domainexpert.survivor.test.LiveVariablesTest"/>
+		</java>
+	</target>
+
+	<!-- Runs very busy expressions analysis -->
+	<target name="very-busy-expressions" depends="compile"
+		description="run very busy expressions analysis">
+		<java classname="com.domainexpert.survivor.VeryBusyExpressionsMain">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!-- Runs very busy expressions analysis -->
+	<target name="very-busy-expressions-tagger" depends="compile"
+		description="run very busy expressions analysis with tagging">
+		<java classname="com.domainexpert.survivor.VeryBusyExpressionsTagger">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			<arg value="-process-dir"/>
+			<arg value="${com.domainexpert.build}"/>
+		</java>
+	</target>
+
+	<!-- Runs the original call graph example -->
+	<target name="original-callgraph" depends="compile"
+		description="run the original call graph example">
+		<java className="dk.brics.soot.callgraphs.CallGraphExample"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.soot.callgraphs.build}"/>
+			</classpath>
+			<arg value="-soot-class-path"/>
+			<arg pathref="dk.brics.soot.callgraphs.soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+			
+			<!--
+				This avoids building the call graph of the excluded
+				JDK methods, which would slow down the call graph
+				construction significantly.
+			-->
+			<arg value="-no-bodies-for-excluded"/>
+		</java>
+	</target>
+
+	<!-- Runs the original points-to analysis example -->
+	<target name="original-pointsto-spark" depends="compile"
+		description="run the original points-to analysis example">
+		<java className="dk.brics.paddle.PointsToAnalysis"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.paddle.build}"/>
+			</classpath>
+			<arg value="spark"/>
+			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
+			<arg pathref="dk.brics.paddle.soot.class.path"/>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+	
+	<!-- Runs the original points-to analysis example -->
+	<target name="original-pointsto-paddle" depends="compile"
+		description="run the original points-to analysis example">
+		<fail
+			message="Not able to run Paddle."
+		/>	
+		<java className="dk.brics.paddle.PointsToAnalysis"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
+				<pathelement path="${user.home}/Documents/workspace/jedd-0.4/runtime/lib/jedd-runtime.jar"/>
+				<pathelement path="${user.home}/src/research/projects/analysis/software/chord-libsrc-2.1/JavaBDD/javabdd-1.0b2.jar"/>
+				<pathelement path="${dk.brics.paddle.build}"/>
+			</classpath>
+			<arg value="paddle"/>
+			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
+			<arg pathref="dk.brics.paddle.soot.class.path"/>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+	
+	<!-- Runs the original intermediate representation example -->
+	<target name="original-intermediate" depends="compile"
+		description="run the original intermediate representation example">
+		<java className="dk.brics.soot.intermediate.main.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.soot.intermediate.build}"/>
+			</classpath>
+			<arg pathref="dk.brics.soot.intermediate.soot.class.path"/>
+			<arg value="com.domainexpert.survivor.test.foo.FooUser"/>
+		</java>
+	</target>
+
+	<!-- Run hello world generator (adapted from Vallee-Rai's thesis) -->
+	<target name="thesis-helloworld" depends="compile"
+		description="run the Hello world! synthesis example from Vallee-Rai's thesis">
+		<java className="com.domainexpert.soot.thesis.helloworld.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+	
+	<!--
+		Run live variable analysis. The runner is included in
+		Soot Survivor's Guide, but the analysis itself is part of Soot.
+	-->
+	<target name="original-livevariable" depends="compile"
+		description="run Soot's live variables analysis using JDK class">
+		<java className="dk.brics.soot.RunLiveAnalysis"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${dk.brics.soot.analysis_framework.build}"/>
+			</classpath>
+			
+			<!-- The class to analyze -->
+			<arg value="testers.LiveVarsClass"/>
+			
+			<!-- The value for -soot-class-path -->
+			<arg pathref="dk.brics.soot.analysis_framework.soot.class.path"/>
+		</java>
+	</target>
+	
+	<!-- Run constant propagation example (adapted from Vallee-Rai's thesis) -->
+	<target name="thesis-constantpropagation" depends="compile"
+		description="run the constant propagation synthesis example from Vallee-Rai's thesis">
+		<java className="com.domainexpert.soot.thesis.constantpropagation.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<!--
+				This example resulted in constant replacements in two statements.
+				Compare ${soot.output}/com.domainexpert.survivor.test.VeryBusyExpressionTest.jimple
+				for this target and the jimple target (which would simply produce the
+				Jimple representation.
+			-->
+			<arg value="com.domainexpert.survivor.test.VeryBusyExpressionTest"/>
+			<arg value="-f"/>
+			<arg value="J"/>
+			<arg value="-verbose"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+		</java>
+	</target>
+
+	<!-- Run constant propagation example (adapted from Vallee-Rai's thesis) -->
+	<target name="thesis-instrumentation" depends="compile"
+		description="run the instrumentation example from Vallee-Rai's thesis">
+
+		<echo message="Instrumenting program ..."/>
+		<java className="com.domainexpert.soot.thesis.instrumentation.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+			<!--
+				This is an example with simple loop
+			-->
+			<arg value="--app"/>
+			<arg value="com.domainexpert.survivor.test.SimpleLoop"/>
+			<arg value="-verbose"/>
+			<arg value="-f"/>
+			<arg value="class"/>
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+			<arg value="-output-dir"/>
+			<arg value="${soot.output}"/>
+		</java>
+		
+		<echo message="Running instrumented program ..."/>
+		<java className="com.domainexpert.survivor.test.SimpleLoop">
+			<classpath>
+				<pathelement path="${soot.output}"/>				
+			</classpath>
+			<arg value="3"/>
+		</java>
+	</target>
+
+	<!-- Run the scene evaluator from Vallee-Rai's thesis (Chapter 5) -->
+	<target name="thesis-sceneevaluator" depends="compile"
+		description="run the scene evaluator example from Vallee-Rai's thesis">
+		<java className="com.domainexpert.soot.thesis.scene.Main"
+			fork="yes" maxmemory="2G">
+			<classpath>
+				<path refid="soot.lib"/>
+				<pathelement path="${com.domainexpert.build}"/>
+			</classpath>
+
+			<!-- Here we still use the SimpleLoop program -->
+			<arg value="-app"/>
+			<arg value="com.domainexpert.survivor.test.SimpleLoop"/>
+
+			<!-- This transformation produces no output -->
+			<arg value="-f"/>
+			<arg value="none"/>
+			
+			<!-- The Soot class path -->
+			<arg value="-soot-class-path"/>
+			<arg pathref="soot.class.path"/>
+		</java>
+	</target>
+
+	<target name="soot-options">
+		<java className="soot.Main">
+			<classpath>
+				<path refid="soot.lib"/>
+			</classpath>
+			<arg value="-help"/>
+		</java>
+	</target>
+</project>
