@@ -8,7 +8,7 @@
 	<property name="src" location="src"/>
 	<property name="build" location="build"/>
 	<property name="soot.output" location="soot_output"/>
-	<property name="soot.lib.dir" location="${user.home}/software/soot/lib"/>
+	<property name="soot.lib.dir" location="${user.home}/Documents/workspace/soot/lib"/>
 	<property name="local.lib.dir" location="${user.home}/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
 	<property name="com.domainexpert.build" location="${build}/main"/>
