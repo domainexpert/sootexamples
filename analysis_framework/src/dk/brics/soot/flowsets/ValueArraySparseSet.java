@@ -19,7 +19,7 @@ import soot.EquivTo;
  * references).</li>
  * <li>All fields and methods declared as private, changed to protected.</li>
  * </ol> 
- * @author Changes made by ¡rni Einarsson
+ * @author Changes made by √Årni Einarsson
  * 
  */
 public class ValueArraySparseSet<T> extends AbstractFlowSet<T> {

@@ -8,9 +8,9 @@
 	<property name="src" location="src"/>
 	<property name="build" location="build"/>
 	<property name="soot.output" location="soot_output"/>
-	<property name="soot.lib.dir" location="${user.home}/Documents/workspace/soot/lib"/>
-	<property name="local.lib.dir" location="${user.home}/lib"/>
-	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
+	<property name="soot.lib.dir" location="${user.home}/workspace/soot/lib"/>
+	<property name="local.lib.dir" location="${user.home}/software/lib"/>
+	<property name="jdk.lib.dir" location="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib"/>
 	<property name="org.domainexpert.build" location="${build}/main"/>
 	
 	<!-- properties for the original call graph example -->
@@ -36,6 +36,10 @@
 
 	<!-- Java library paths -->
 	<path id="jre.lib">
+		<pathelement path="${jdk.lib.dir}/rt.jar"/>
+		<pathelement path="${jdk.lib.dir}/javazic.jar"/>
+		<pathelement path="${jdk.lib.dir}/resources.jar"/>
+		<pathelement path="${jdk.lib.dir}/rhino.jar"/>
 		<pathelement path="${jdk.lib.dir}/alt-rt.jar"/>
 		<pathelement path="${jdk.lib.dir}/alt-string.jar"/>
 		<pathelement path="${jdk.lib.dir}/charsets.jar"/>
@@ -66,6 +70,7 @@
 	<path id="dk.brics.paddle.soot.class.path">
 		<path refid="soot.class.path"/>
 		<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
+		<pathelement path="${local.lib.dir}/paddle-0.3.jar"/>
 		<pathelement path="${dk.brics.paddle.build}"/>
 	</path>
 

@@ -48,7 +48,7 @@ public class SimpleVeryBusyExpressions implements VeryBusyExpressions
 /**
  * Performs a naiive version of a very-busy expressions analysis.
  * 
- * @author ¡rni Einarsson
+ * @author √Årni Einarsson
  */
 class SimpleVeryBusyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<AbstractBinopExpr>>
 {
