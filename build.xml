@@ -11,7 +11,7 @@
 	<property name="soot.lib.dir" location="${user.home}/Documents/workspace/soot/lib"/>
 	<property name="local.lib.dir" location="${user.home}/lib"/>
 	<property name="jdk.lib.dir" location="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes"/>
-	<property name="com.domainexpert.build" location="${build}/main"/>
+	<property name="org.domainexpert.build" location="${build}/main"/>
 	
 	<!-- properties for the original call graph example -->
 	<property name="dk.brics.soot.callgraphs.src" location="call_graph/src"/>
@@ -52,7 +52,7 @@
 	<path id="soot.class.path">
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
-		<pathelement path="${com.domainexpert.build}"/>
+		<pathelement path="${org.domainexpert.build}"/>
 	</path>
 
 	<!-- The value of -soot-class-path for the original call graph example -->
@@ -74,7 +74,7 @@
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
 		<pathelement path="${dk.brics.soot.intermediate.build}"/>
-		<pathelement path="${com.domainexpert.build}"/>
+		<pathelement path="${org.domainexpert.build}"/>
 	</path>
 	
 	<!-- The value of -soot-class-path for the live variable analyis -->
@@ -94,7 +94,7 @@
 		<mkdir dir="${soot.output}"/>
 
 		<!-- Create the build directory for own-made programs -->
-		<mkdir dir="${com.domainexpert.build}"/>
+		<mkdir dir="${org.domainexpert.build}"/>
 		
 		<!-- Create the build directory of the original call graph example -->
 		<mkdir dir="${dk.brics.soot.callgraphs.build}"/>
@@ -112,7 +112,7 @@
 	<target name="compile" depends="init"
         description="compile the source">
 		<!-- Compile the own-made programs -->
-		<javac srcdir="${src}" destdir="${com.domainexpert.build}" includeantruntime="false"
+		<javac srcdir="${src}" destdir="${org.domainexpert.build}" includeantruntime="false"
 			deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
@@ -166,7 +166,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -182,7 +182,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -202,7 +202,7 @@
 			<arg value="${soot.output}"/>
 			<arg value="-O"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -224,7 +224,7 @@
 			<arg value="${soot.output}"/>
 			<arg value="-O"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -240,7 +240,7 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainaexpert.build}"/>
+			<arg value="${org.domainaexpert.build}"/>
 		</java>
 	</target>
 
@@ -257,11 +257,11 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 			<arg value="-p"/>
 			<arg value="jap.npcolorer"/>
 			<arg value="on"/>
-			<arg value="com.domainexpert.survivor.test.NullPointerTest"/>
+			<arg value="org.domainexpert.survivor.test.NullPointerTest"/>
 		</java>	
 	</target>
 
@@ -278,14 +278,14 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 			<arg value="-p"/>
 			<arg value="jap.abc"/>
 			<arg value="on"/>
 			<arg value="-p"/>
 			<arg value="jap.abc"/>
 			<arg value="add-color-tags:true"/>
-			<arg value="com.domainexpert.survivor.test.ArrayBoundsTest"/>
+			<arg value="org.domainexpert.survivor.test.ArrayBoundsTest"/>
 		</java>
 	</target>
 
@@ -302,45 +302,45 @@
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 			<arg value="-p"/>
 			<arg value="jap.lvtagger"/>
 			<arg value="on"/>
-			<arg value="com.domainexpert.survivor.test.LiveVariablesTest"/>
+			<arg value="org.domainexpert.survivor.test.LiveVariablesTest"/>
 		</java>
 	</target>
 
 	<!-- Runs very busy expressions analysis -->
 	<target name="very-busy-expressions" depends="compile"
 		description="run very busy expressions analysis">
-		<java classname="com.domainexpert.survivor.VeryBusyExpressionsMain">
+		<java classname="org.domainexpert.survivor.VeryBusyExpressionsMain">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${com.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build}"/>
 			</classpath>
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 		</java>
 	</target>
 
 	<!-- Runs very busy expressions analysis -->
 	<target name="very-busy-expressions-tagger" depends="compile"
 		description="run very busy expressions analysis with tagging">
-		<java classname="com.domainexpert.survivor.VeryBusyExpressionsTagger">
+		<java classname="org.domainexpert.survivor.VeryBusyExpressionsTagger">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${com.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build}"/>
 			</classpath>
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
 			<arg value="${soot.output}"/>
 			<arg value="-process-dir"/>
-			<arg value="${com.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build}"/>
 		</java>
 	</target>
 
@@ -377,7 +377,7 @@
 				<pathelement path="${dk.brics.paddle.build}"/>
 			</classpath>
 			<arg value="spark"/>
-			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
+			<arg value="org.domainexpert.survivor.test.ContainerUser"/>
 			<arg pathref="dk.brics.paddle.soot.class.path"/>
 			<arg value="${soot.output}"/>
 		</java>
@@ -399,7 +399,7 @@
 				<pathelement path="${dk.brics.paddle.build}"/>
 			</classpath>
 			<arg value="paddle"/>
-			<arg value="com.domainexpert.survivor.test.ContainerUser"/>
+			<arg value="org.domainexpert.survivor.test.ContainerUser"/>
 			<arg pathref="dk.brics.paddle.soot.class.path"/>
 			<arg value="${soot.output}"/>
 		</java>
@@ -415,18 +415,18 @@
 				<pathelement path="${dk.brics.soot.intermediate.build}"/>
 			</classpath>
 			<arg pathref="dk.brics.soot.intermediate.soot.class.path"/>
-			<arg value="com.domainexpert.survivor.test.foo.FooUser"/>
+			<arg value="org.domainexpert.survivor.test.foo.FooUser"/>
 		</java>
 	</target>
 
 	<!-- Run hello world generator (adapted from Vallee-Rai's thesis) -->
 	<target name="thesis-helloworld" depends="compile"
 		description="run the Hello world! synthesis example from Vallee-Rai's thesis">
-		<java className="com.domainexpert.soot.thesis.helloworld.Main"
+		<java className="org.domainexpert.soot.thesis.helloworld.Main"
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${com.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build}"/>
 			</classpath>
 			<arg value="${soot.output}"/>
 		</java>
@@ -456,19 +456,19 @@
 	<!-- Run constant propagation example (adapted from Vallee-Rai's thesis) -->
 	<target name="thesis-constantpropagation" depends="compile"
 		description="run the constant propagation synthesis example from Vallee-Rai's thesis">
-		<java className="com.domainexpert.soot.thesis.constantpropagation.Main"
+		<java className="org.domainexpert.soot.thesis.constantpropagation.Main"
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${com.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build}"/>
 			</classpath>
 			<!--
 				This example resulted in constant replacements in two statements.
-				Compare ${soot.output}/com.domainexpert.survivor.test.VeryBusyExpressionTest.jimple
+				Compare ${soot.output}/org.domainexpert.survivor.test.VeryBusyExpressionTest.jimple
 				for this target and the jimple target (which would simply produce the
 				Jimple representation.
 			-->
-			<arg value="com.domainexpert.survivor.test.VeryBusyExpressionTest"/>
+			<arg value="org.domainexpert.survivor.test.VeryBusyExpressionTest"/>
 			<arg value="-f"/>
 			<arg value="J"/>
 			<arg value="-verbose"/>
@@ -484,17 +484,17 @@
 		description="run the instrumentation example from Vallee-Rai's thesis">
 
 		<echo message="Instrumenting program ..."/>
-		<java className="com.domainexpert.soot.thesis.instrumentation.Main"
+		<java className="org.domainexpert.soot.thesis.instrumentation.Main"
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${com.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build}"/>
 			</classpath>
 			<!--
 				This is an example with simple loop
 			-->
 			<arg value="--app"/>
-			<arg value="com.domainexpert.survivor.test.SimpleLoop"/>
+			<arg value="org.domainexpert.survivor.test.SimpleLoop"/>
 			<arg value="-verbose"/>
 			<arg value="-f"/>
 			<arg value="class"/>
@@ -505,7 +505,7 @@
 		</java>
 		
 		<echo message="Running instrumented program ..."/>
-		<java className="com.domainexpert.survivor.test.SimpleLoop">
+		<java className="org.domainexpert.survivor.test.SimpleLoop">
 			<classpath>
 				<pathelement path="${soot.output}"/>				
 			</classpath>
@@ -516,16 +516,16 @@
 	<!-- Run the scene evaluator from Vallee-Rai's thesis (Chapter 5) -->
 	<target name="thesis-sceneevaluator" depends="compile"
 		description="run the scene evaluator example from Vallee-Rai's thesis">
-		<java className="com.domainexpert.soot.thesis.scene.Main"
+		<java className="org.domainexpert.soot.thesis.scene.Main"
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${com.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build}"/>
 			</classpath>
 
 			<!-- Here we still use the SimpleLoop program -->
 			<arg value="-app"/>
-			<arg value="com.domainexpert.survivor.test.SimpleLoop"/>
+			<arg value="org.domainexpert.survivor.test.SimpleLoop"/>
 
 			<!-- This transformation produces no output -->
 			<arg value="-f"/>
