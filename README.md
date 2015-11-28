@@ -1,14 +1,4 @@
-# SootExamples
+Examples from *A Survivor's Guide to Java Program Analysis in Soot* (*Survivor's Guide*) extracted from the Soot source tree in September 2015, with additional examples from the thesis *Soot: A Java Bytecode Optimization Framework* by Raja Vallee-Rai that are not already included in the Survivor's Guilde.
 
-This project contains the examples from "A Survivor's Guide to Java Program
-Analysis in Soot", extracted from the Soot source tree in September 2015.
-It also contains examples from Raja Vallee-Rai's thesis "Soot: A Java
-Bytecode Optimization Framework" in com.domainexpert.soot.thesis package
-under src directory. The package does not contain all the examples from
-the thesis as the Survivor Guides's examples already include some of the
-examples from the thesis, such as the live variable analysis.
-
-The directory doc contains the PDF versions of both the survivor's guide
-and Vallee-Rai's thesis.
-
+The original Survivor's Guide website is http://www.brics.dk/SootGuide/ and Vallee-Rai's thesis can be found at http://www.sable.mcgill.ca/publications/thesis/#korMastersThesis
 
