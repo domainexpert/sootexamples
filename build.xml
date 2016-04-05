@@ -68,7 +68,9 @@
 	<!-- The value of -soot-class-path for the original points-to analysis example -->
 	<path id="dk.brics.paddle.soot.class.path">
 		<path refid="soot.class.path"/>
-		<pathelement path="${lib.dir}/paddle-nightly.jar"/>
+		<pathelement path="${lib.dir}/paddle-0.3.jar"/>
+		<pathelement path="${lib.dir}/jedd-runtime.jar"/>
+		<pathelement path="${lib.dir}/jedd-translator.jar"/>
 		<pathelement path="${dk.brics.paddle.build.dir}"/>
 	</path>
 
@@ -389,15 +391,13 @@
 	<!-- Runs the original points-to analysis example -->
 	<target name="original-pointsto-paddle" depends="compile"
 		description="run the original points-to analysis example">
-		<fail
-			message="Not able to run Paddle."
-		/>	
 		<java className="dk.brics.paddle.PointsToAnalysis"
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${lib.dir}/paddle-nightly.jar"/>
-				<pathelement path="${user.home}/Documents/workspace/jedd-0.4/runtime/lib/jedd-runtime.jar"/>
+				<pathelement path="${lib.dir}/paddle-0.3.jar"/>
+				<pathelement path="${lib.dir}/jedd-runtime.jar"/>
+				<pathelement path="${lib.dir}/jedd-translator.jar"/>
 				<pathelement path="${user.home}/src/research/projects/analysis/software/chord-libsrc-2.1/JavaBDD/javabdd-1.0b2.jar"/>
 				<pathelement path="${dk.brics.paddle.build.dir}"/>
 			</classpath>
