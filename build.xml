@@ -5,33 +5,32 @@
   </description>
 
 	<!-- set global properties for this build -->
-	<property name="src" location="src"/>
-	<property name="build" location="build"/>
-	<property name="soot.output" location="soot_output"/>
-	<property name="soot.lib.dir" location="${user.home}/workspace/soot/lib"/>
-	<property name="local.lib.dir" location="${user.home}/software/lib"/>
+	<property name="src.dir" location="src"/>
+	<property name="build.dir" location="build"/>
+	<property name="soot.output.dir" location="soot_output"/>
+	<property name="lib.dir" location="lib"/>
 	<property name="jdk.lib.dir" location="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib"/>
-	<property name="org.domainexpert.build" location="${build}/main"/>
+	<property name="org.domainexpert.build.dir" location="${build.dir}/main"/>
 	
 	<!-- properties for the original call graph example -->
-	<property name="dk.brics.soot.callgraphs.src" location="call_graph/src"/>
-	<property name="dk.brics.soot.callgraphs.build" location="${build}/call_graph"/>
+	<property name="dk.brics.soot.callgraphs.src.dir" location="call_graph/src"/>
+	<property name="dk.brics.soot.callgraphs.build.dir" location="${build.dir}/call_graph"/>
 
 	<!-- properties for the original points-to analysis example -->
-	<property name="dk.brics.paddle.src" location="pointsto/src"/>
-	<property name="dk.brics.paddle.build" location="${build}/pointsto"/>
+	<property name="dk.brics.paddle.src.dir" location="pointsto/src"/>
+	<property name="dk.brics.paddle.build.dir" location="${build.dir}/pointsto"/>
 
 	<!-- properties for the original intermediate representation example -->
-	<property name="dk.brics.soot.intermediate.src" location="intermediate_representation/src"/>
-	<property name="dk.brics.soot.intermediate.build" location="${build}/intermediate_representation"/>	
+	<property name="dk.brics.soot.intermediate.src.dir" location="intermediate_representation/src"/>
+	<property name="dk.brics.soot.intermediate.build.dir" location="${build.dir}/intermediate_representation"/>	
 	
 	<!-- properties for the live variable analysis runner -->
-	<property name="dk.brics.soot.analysis_framework.src" location="analysis_framework/src"/>
-	<property name="dk.brics.soot.analysis_framework.build" location="${build}/analysis_framework"/>
+	<property name="dk.brics.soot.analysis_framework.src.dir" location="analysis_framework/src"/>
+	<property name="dk.brics.soot.analysis_framework.build.dir" location="${build.dir}/analysis_framework"/>
 	
 	<!-- Soot library paths -->
 	<path id="soot.lib">
-		<pathelement path="${soot.lib.dir}/soot-trunk.jar"/>
+		<pathelement path="${lib.dir}/soot-trunk.jar"/>
 	</path>
 
 	<!-- Java library paths -->
@@ -56,36 +55,35 @@
 	<path id="soot.class.path">
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
-		<pathelement path="${org.domainexpert.build}"/>
+		<pathelement path="${org.domainexpert.build.dir}"/>
 	</path>
 
 	<!-- The value of -soot-class-path for the original call graph example -->
 	<path id="dk.brics.soot.callgraphs.soot.class.path">
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
-		<pathelement path="${dk.brics.soot.callgraphs.build}"/>
+		<pathelement path="${dk.brics.soot.callgraphs.build.dir}"/>
 	</path>
 
 	<!-- The value of -soot-class-path for the original points-to analysis example -->
 	<path id="dk.brics.paddle.soot.class.path">
 		<path refid="soot.class.path"/>
-		<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
-		<pathelement path="${local.lib.dir}/paddle-0.3.jar"/>
-		<pathelement path="${dk.brics.paddle.build}"/>
+		<pathelement path="${lib.dir}/paddle-nightly.jar"/>
+		<pathelement path="${dk.brics.paddle.build.dir}"/>
 	</path>
 
 	<!-- The value of -soot-class-path for the original intermediate representation example -->
 	<path id="dk.brics.soot.intermediate.soot.class.path">
 		<path refid="jre.lib"/>
 		<path refid="soot.lib"/>
-		<pathelement path="${dk.brics.soot.intermediate.build}"/>
-		<pathelement path="${org.domainexpert.build}"/>
+		<pathelement path="${dk.brics.soot.intermediate.build.dir}"/>
+		<pathelement path="${org.domainexpert.build.dir}"/>
 	</path>
 	
 	<!-- The value of -soot-class-path for the live variable analyis -->
 	<path id="dk.brics.soot.analysis_framework.soot.class.path">
 		<path refid="jre.lib"/>
-		<pathelement path="${dk.brics.soot.analysis_framework.build}"/>
+		<pathelement path="${dk.brics.soot.analysis_framework.build.dir}"/>
 	</path>
 		
 	<target name="init">
@@ -93,59 +91,59 @@
 		<tstamp/>
 		
 		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${build}"/>
+		<mkdir dir="${build.dir}"/>
 		
 		<!-- Create the Soot output directory -->
-		<mkdir dir="${soot.output}"/>
+		<mkdir dir="${soot.output.dir}"/>
 
 		<!-- Create the build directory for own-made programs -->
-		<mkdir dir="${org.domainexpert.build}"/>
+		<mkdir dir="${org.domainexpert.build.dir}"/>
 		
 		<!-- Create the build directory of the original call graph example -->
-		<mkdir dir="${dk.brics.soot.callgraphs.build}"/>
+		<mkdir dir="${dk.brics.soot.callgraphs.build.dir}"/>
 		
 		<!-- Create the build directory of the points-to example -->
-		<mkdir dir="${dk.brics.paddle.build}"/>
+		<mkdir dir="${dk.brics.paddle.build.dir}"/>
 		
 		<!-- Create the build directory of the intermediate representation example -->
-		<mkdir dir="${dk.brics.soot.intermediate.build}"/>
+		<mkdir dir="${dk.brics.soot.intermediate.build.dir}"/>
 		
 		<!-- Create the build directory of the analysis framework -->
-		<mkdir dir="${dk.brics.soot.analysis_framework.build}"/>
+		<mkdir dir="${dk.brics.soot.analysis_framework.build.dir}"/>
 	</target>
 
 	<target name="compile" depends="init"
         description="compile the source">
 		<!-- Compile the own-made programs -->
-		<javac srcdir="${src}" destdir="${org.domainexpert.build}" includeantruntime="false"
+		<javac srcdir="${src.dir}" destdir="${org.domainexpert.build.dir}" includeantruntime="false"
 			deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
 		
 		<!-- Compile the original call graph example -->
-		<javac srcdir="${dk.brics.soot.callgraphs.src}"
-			destdir="${dk.brics.soot.callgraphs.build}"
+		<javac srcdir="${dk.brics.soot.callgraphs.src.dir}"
+			destdir="${dk.brics.soot.callgraphs.build.dir}"
 			includeantruntime="false" deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
 
 		<!-- Compile the original points-to analysis example -->
-		<javac srcdir="${dk.brics.paddle.src}"
-			destdir="${dk.brics.paddle.build}"
+		<javac srcdir="${dk.brics.paddle.src.dir}"
+			destdir="${dk.brics.paddle.build.dir}"
 			includeantruntime="false" deprecation="on">
 			<classpath refid="dk.brics.paddle.soot.class.path"/>
 		</javac>
 		
 		<!-- Compile the original intermediate representation example -->
-		<javac srcdir="${dk.brics.soot.intermediate.src}"
-			destdir="${dk.brics.soot.intermediate.build}"
+		<javac srcdir="${dk.brics.soot.intermediate.src.dir}"
+			destdir="${dk.brics.soot.intermediate.build.dir}"
 			includeantruntime="false" deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
 
 		<!-- Compile the analysis framework example -->
-		<javac srcdir="${dk.brics.soot.analysis_framework.src}"
-			destdir="${dk.brics.soot.analysis_framework.build}"
+		<javac srcdir="${dk.brics.soot.analysis_framework.src.dir}"
+			destdir="${dk.brics.soot.analysis_framework.build.dir}"
 			includeantruntime="false" deprecation="on">
 			<classpath refid="soot.lib"/>
 		</javac>
@@ -155,8 +153,8 @@
 	<target name="clean"
         description="clean up">
 		<!-- Delete the build and Soot output directory trees -->
-		<delete dir="${build}"/>
-		<delete dir="${soot.output}"/>
+		<delete dir="${build.dir}"/>
+		<delete dir="${soot.output.dir}"/>
 	</target>
 
 	<!-- This outputs Jimple representation of the bytecode -->	
@@ -169,9 +167,9 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -185,9 +183,9 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -204,10 +202,10 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-O"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -226,10 +224,10 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-O"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -243,9 +241,9 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainaexpert.build}"/>
+			<arg value="${org.domainaexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -260,9 +258,9 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 			<arg value="-p"/>
 			<arg value="jap.npcolorer"/>
 			<arg value="on"/>
@@ -281,9 +279,9 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 			<arg value="-p"/>
 			<arg value="jap.abc"/>
 			<arg value="on"/>
@@ -305,9 +303,9 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 			<arg value="-p"/>
 			<arg value="jap.lvtagger"/>
 			<arg value="on"/>
@@ -321,14 +319,14 @@
 		<java classname="org.domainexpert.survivor.VeryBusyExpressionsMain">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${org.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build.dir}"/>
 			</classpath>
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -338,14 +336,14 @@
 		<java classname="org.domainexpert.survivor.VeryBusyExpressionsTagger">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${org.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build.dir}"/>
 			</classpath>
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			<arg value="-process-dir"/>
-			<arg value="${org.domainexpert.build}"/>
+			<arg value="${org.domainexpert.build.dir}"/>
 		</java>
 	</target>
 
@@ -356,12 +354,12 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${dk.brics.soot.callgraphs.build}"/>
+				<pathelement path="${dk.brics.soot.callgraphs.build.dir}"/>
 			</classpath>
 			<arg value="-soot-class-path"/>
 			<arg pathref="dk.brics.soot.callgraphs.soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 			
 			<!--
 				This avoids building the call graph of the excluded
@@ -379,12 +377,12 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${dk.brics.paddle.build}"/>
+				<pathelement path="${dk.brics.paddle.build.dir}"/>
 			</classpath>
 			<arg value="spark"/>
 			<arg value="org.domainexpert.survivor.test.ContainerUser"/>
 			<arg pathref="dk.brics.paddle.soot.class.path"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 		</java>
 	</target>
 	
@@ -398,15 +396,15 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${local.lib.dir}/paddle-nightly.jar"/>
+				<pathelement path="${lib.dir}/paddle-nightly.jar"/>
 				<pathelement path="${user.home}/Documents/workspace/jedd-0.4/runtime/lib/jedd-runtime.jar"/>
 				<pathelement path="${user.home}/src/research/projects/analysis/software/chord-libsrc-2.1/JavaBDD/javabdd-1.0b2.jar"/>
-				<pathelement path="${dk.brics.paddle.build}"/>
+				<pathelement path="${dk.brics.paddle.build.dir}"/>
 			</classpath>
 			<arg value="paddle"/>
 			<arg value="org.domainexpert.survivor.test.ContainerUser"/>
 			<arg pathref="dk.brics.paddle.soot.class.path"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 		</java>
 	</target>
 	
@@ -417,7 +415,7 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${dk.brics.soot.intermediate.build}"/>
+				<pathelement path="${dk.brics.soot.intermediate.build.dir}"/>
 			</classpath>
 			<arg pathref="dk.brics.soot.intermediate.soot.class.path"/>
 			<arg value="org.domainexpert.survivor.test.foo.FooUser"/>
@@ -431,9 +429,9 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${org.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build.dir}"/>
 			</classpath>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 		</java>
 	</target>
 	
@@ -447,7 +445,7 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${dk.brics.soot.analysis_framework.build}"/>
+				<pathelement path="${dk.brics.soot.analysis_framework.build.dir}"/>
 			</classpath>
 			
 			<!-- The class to analyze -->
@@ -465,11 +463,11 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${org.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build.dir}"/>
 			</classpath>
 			<!--
 				This example resulted in constant replacements in two statements.
-				Compare ${soot.output}/org.domainexpert.survivor.test.VeryBusyExpressionTest.jimple
+				Compare ${soot.output.dir}/org.domainexpert.survivor.test.VeryBusyExpressionTest.jimple
 				for this target and the jimple target (which would simply produce the
 				Jimple representation.
 			-->
@@ -480,7 +478,7 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 		</java>
 	</target>
 
@@ -493,7 +491,7 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${org.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build.dir}"/>
 			</classpath>
 			<!--
 				This is an example with simple loop
@@ -506,13 +504,13 @@
 			<arg value="-soot-class-path"/>
 			<arg pathref="soot.class.path"/>
 			<arg value="-output-dir"/>
-			<arg value="${soot.output}"/>
+			<arg value="${soot.output.dir}"/>
 		</java>
 		
 		<echo message="Running instrumented program ..."/>
 		<java className="org.domainexpert.survivor.test.SimpleLoop">
 			<classpath>
-				<pathelement path="${soot.output}"/>				
+				<pathelement path="${soot.output.dir}"/>				
 			</classpath>
 			<arg value="3"/>
 		</java>
@@ -525,7 +523,7 @@
 			fork="yes" maxmemory="2G">
 			<classpath>
 				<path refid="soot.lib"/>
-				<pathelement path="${org.domainexpert.build}"/>
+				<pathelement path="${org.domainexpert.build.dir}"/>
 			</classpath>
 
 			<!-- Here we still use the SimpleLoop program -->
