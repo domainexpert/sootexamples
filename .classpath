@@ -10,6 +10,6 @@
 	<classpathentry kind="src" path="call_graph/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="/soot/lib/soot-trunk.jar" sourcepath="/soot/lib/sootsources-trunk.jar"/>
-	<classpathentry kind="lib" path="/home/dcsandr/software/lib/paddle-0.3.jar"/>
+	<classpathentry kind="lib" path="lib/paddle-0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
