@@ -31,6 +31,7 @@
 	<!-- Soot library paths -->
 	<path id="soot.lib">
 		<pathelement path="${lib.dir}/soot-trunk.jar"/>
+		<pathelement path="${lib.dir}/java-cup-11b.jar"/>
 	</path>
 
 	<!-- Java library paths -->
